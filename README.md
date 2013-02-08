@@ -1,4 +1,0 @@
-kbotpi
-======
-
-Kartobot RaspberryPi
