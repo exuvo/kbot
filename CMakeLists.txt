@@ -12,6 +12,11 @@ FIND_PACKAGE(Boost)
 INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${LINK_DIRECTORIES} ${Boost_LIBRARY_DIRS})
 
+#gflags
+#FIND_PACKAGE(gflags)
+#INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${gflags_INCLUDE_DIRS})
+#LINK_DIRECTORIES(${LINK_DIRECTORIES} ${gflags_LIBRARY_DIRS})
+
 if (USE_OPENCV)
 	#OpenCV
 	FIND_PACKAGE(OpenCV REQUIRED )
@@ -21,7 +26,7 @@ if (USE_OPENCV)
 	TARGET_LINK_LIBRARIES(Scalar ${OpenCV_LIBS})
 endif (USE_OPENCV)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g -Wall")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g -W -Wall -Wextra -pedantic -std=c++11")
 
 #configure a header file to pass some of the CMake settings to the source code
 configure_file (
@@ -29,11 +34,12 @@ configure_file (
 	"${PROJECT_BINARY_DIR}/config.h"
 	)
 
-#add the binary tree to the search path for include files so that we will find
-# generated headers
+#add the binary tree to the search path for include files so that we will find generated headers
 include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/src/lib/bstr")
 add_subdirectory(src/lib/bstr)
 
 add_executable(kbotpi src/main)
-target_link_libraries(kbotpi bstr)
+target_link_libraries(kbotpi bstr gflags)
+install(TARGETS kbotpi RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})

@@ -1,4 +1,5 @@
 
 
-#define kbotpi_VERSION_MAJOR @kbotpi_VERSION_MAJOR@
-#define kbotpi_VERSION_MINOR @kbotpi_VERSION_MINOR@
+#define VERSION_MAJOR @kbotpi_VERSION_MAJOR@
+#define VERSION_MINOR @kbotpi_VERSION_MINOR@
+//#define NDEBUG

@@ -1,1 +1,1 @@
-add_library( bstrlib bsafe.c bstest.c bstraux.c bstrlib.c bstrwrap.cpp cpptest.cpp test.cpp testaux.c )
+add_library( bstr bsafe.c bstraux.c bstrlib.c bstrwrap.cpp )
