@@ -3,8 +3,9 @@
 #include <string.h>
 #include "dbg.h"
 #include <gflags/gflags.h>
+#include "ui/ui.h"
 
-DEFINE_bool(crash, false, "Crash quickly."); 
+DEFINE_bool(crash, false, "Crash faster than usual."); 
 
 int main( int argc, char* argv[] ){
 	printf("kbotpi version %u.%u\n", VERSION_MAJOR, VERSION_MINOR);
@@ -16,4 +17,7 @@ int main( int argc, char* argv[] ){
 		int *p = 0;
 		*p = 42;
 	}
+
+	new UI();
+	std::cout << "Main exit" << endl;
 }
