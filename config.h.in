@@ -2,3 +2,5 @@
 
 #define VERSION_MAJOR @kbotpi_VERSION_MAJOR@
 #define VERSION_MINOR @kbotpi_VERSION_MINOR@
+#define VERSION_PATCH @kbotpi_VERSION_PATCH@
+#define VERSION_TWEAK @kbotpi_VERSION_TWEAK@

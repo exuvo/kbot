@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 2.8)
 project (kbotpi)
 set (kbotpi_VERSION_MAJOR 0)
 set (kbotpi_VERSION_MINOR 0)
+set (kbotpi_VERSION_PATCH 1)
+set (kbotpi_VERSION_TWEAK 0)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -60,6 +62,11 @@ include_directories(${includeList})
 #include_directories("${PROJECT_SOURCE_DIR}/src/lib/bstr")
 add_subdirectory(src/lib/bstr)
 
-add_executable(kbotpi src/main)
-target_link_libraries(kbotpi bstr gflags)
+aux_source_directory(src srcRoot)
+aux_source_directory(src/network srcNet)
+aux_source_directory(src/ui srcUI)
+aux_source_directory(src/map srcMap)
+#list(REMOVE_ITEM srcFiles "exclude"
+add_executable(kbotpi ${srcRoot} ${srcNet} ${srcUI} ${srcMap})
+target_link_libraries(kbotpi bstr gflags ncurses)
 install(TARGETS kbotpi RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
