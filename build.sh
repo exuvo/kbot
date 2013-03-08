@@ -29,8 +29,8 @@ case "$A" in
 		$0 clean &&	$0 build $* && $0 run
 		exit $?
 		;;
-	-h|--help)
-		echo "TODO: print help here"
+	-h|--help|help)
+		echo "build|[clean|run|all|cmake|make]"
 		exit 1
 		;;
 	cmake)
