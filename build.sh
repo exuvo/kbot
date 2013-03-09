@@ -22,8 +22,10 @@ case "$A" in
 		exit $?
 		;;
 	run|r)
-		./bin/kbotpi $*
-		exit $?
+		./bin/kbotpi $* 2> error
+		ret=$?
+		cat error
+		exit $ret
 		;;
 	all|a)
 		$0 clean &&	$0 build $* && $0 run

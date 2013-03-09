@@ -3,23 +3,45 @@
 #include <iostream>
 #include <thread>
 #include <menu.h>
+#include "dbg.h"
+
 
 #define HIGHLIGHT COLOR_PAIR(1)
 
-class mainTab : public tab {
-private:
-	std::vector<std::string> names;
+class menuWidget {
+	std::vector<std::string> names, desc;
 	MENU *menu;
 	ITEM **items;
 	unsigned int size;
+	WINDOW *w;
 
 	void rebuild(){
 		items = (ITEM **) calloc(names.size()+1, sizeof(ITEM*));
+		check_mem(items);
 		for(unsigned int i=0; i<names.size(); i++){
-			items[i] = new_item(names[i].c_str(), NULL);
+			items[i] = new_item(names[i].c_str(), desc[i].c_str());
+			check(items[i], "");
 		}
 		menu = new_menu(items);
+		check(menu, "");
+		set_menu_win(menu, w);
+		set_menu_sub(menu, derwin(w,6,38,3,1));
+		set_menu_mark(menu, "*");
+//		int sy,sx,ey,ex,h,w;
+//		getbegyx(w, sy, sx);
+//		getmaxyx(w, ey, ex);
+//		h = ey-sy;
+//		w = ex-sx;
+		box(w,0,0);
+//		mvwprintw(w, 2, w/2, "My menu");
+//		mvwaddch(w, 2, 0, ACS_LTEE);
+//		mvwhline(w, 2, 1, ACS_HLINE, w-2);
+//		mvwaddch(w, 2, w-1, ACS_RTEE);
+		size = names.size();
 
+		return;
+		error:
+		debug("e");
 	}
 
 	void clean(){
@@ -31,20 +53,61 @@ private:
 	}
 
 public:
-	mainTab(): tab("main"), names(), size(0) {}
-	~mainTab() {clean();}
+	menuWidget(WINDOW *win): names(), desc(), size(0), w(win) {}
+	~menuWidget() {clean();}
+
+	void add(std::string name, std::string descript){
+		names.push_back(name);
+		desc.push_back(descript);
+	}
 
 	void update(){
 		if(size != names.size()){
 			rebuild();
-
+			post_menu(menu);
 		}
+		wrefresh(w);
 	}
 
 	bool input(int &key){
+		debug("input menuWidget %d", key);
 		switch(key){
+			case KEY_DOWN:
+				menu_driver(menu, REQ_DOWN_ITEM);
+				break;
+			case KEY_UP:
+				menu_driver(menu, REQ_UP_ITEM);
+				break;
 			default:
 				return false;
+		}
+		return true;
+	}
+};
+
+class mainTab : public tab {
+private:
+	WINDOW *menuW;
+	PANEL *menuP;
+	menuWidget menu;
+public:
+	mainTab(): tab("main"), menuW(derwin(win, 10,10,5,5)), menuP(new_panel(menuW)), menu(menuW) {
+//	mainTab(): tab("main"), menuW(getWindow()), menu(menuW) {
+		menu.add("a","b"); 
+		menu.add("c","d");
+	}
+	~mainTab() {}
+
+	void update(){
+		debug("update mainTab");
+		menu.update();
+	}
+
+	bool input(int key){
+		debug("input mainTab %d", key);
+		switch(key){
+			default:
+				return menu.input(key);
 		}
 	}
 };
@@ -97,11 +160,12 @@ void UI::run(){
 	init_pair(3, COLOR_BLUE, COLOR_BLACK);
 	init_pair(4, COLOR_CYAN, COLOR_BLACK);
 
-	tabs.push_back(dynamic_cast<tab*>(new mainTab()));	
-	tabs.push_back(new tab("test"));	
-	tabs.push_back(new tab("tsdfdsfdsfdsfdsfdsfdsfest"));	
-	tabs.push_back(new tab("test"));	
-	tabs.push_back(new tab("t"));	
+	//tabs.push_back(dynamic_cast<tab*>(new mainTab()));	
+	tabs.push_back(new mainTab());	
+	//tabs.push_back(new tab("nav"));	
+	//tabs.push_back(new tab("settings"));	
+	//tabs.push_back(new tab("log"));	
+	//tabs.push_back(new tab("_"));	
 
 	for(tab* t : tabs){
 		hide_panel(t->getPanel());
@@ -112,8 +176,6 @@ void UI::run(){
 
 	initHeader();
 	drawHeader();
-
-	box(currentTab->getWindow(),0,0);
 
 	while(!m_stop){
 		currentTab->update();
@@ -136,7 +198,7 @@ void UI::run(){
 			case KEY_F(11):
 			case KEY_F(12):
 				ch -= KEY_F(1);
-				if(ch < tabs.size()){
+				if(ch < (int)tabs.size()){
 					hide_panel(currentTab->getPanel());
 					currentTab = tabs[ch];
 					show_panel(currentTab->getPanel());
@@ -151,6 +213,7 @@ void UI::run(){
 				break;
 			default:
 				currentTab->input(ch);
+				debug("input3 %d %s", ch, currentTab->getName().c_str());
 				break;
 		}
 	}

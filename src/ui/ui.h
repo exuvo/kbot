@@ -7,6 +7,7 @@
 #include <panel.h>
 #include <string>
 #include <vector>
+#include "dbg.h"
 
 class tab {
 public:
@@ -18,10 +19,11 @@ public:
 	PANEL* getPanel() {return pan;}
 	WINDOW* getWindow() {return win;}
 	std::string& getName() {return _name;}
-	virtual bool input(int key) {return false;};
-	virtual void update() {};
+	virtual bool input(int key)  = 0;//{debug("i"); return false;};
+	virtual void update() = 0;
 
 private:
+protected:
 	std::string _name;
 	WINDOW *win;
 	PANEL *pan;
