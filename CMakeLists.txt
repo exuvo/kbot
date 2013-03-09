@@ -68,5 +68,5 @@ aux_source_directory(src/ui srcUI)
 aux_source_directory(src/map srcMap)
 #list(REMOVE_ITEM srcFiles "exclude"
 add_executable(kbotpi ${srcRoot} ${srcNet} ${srcUI} ${srcMap})
-target_link_libraries(kbotpi bstr gflags ncurses)
+target_link_libraries(kbotpi bstr gflags ncurses menu panel)
 install(TARGETS kbotpi RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})

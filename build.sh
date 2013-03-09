@@ -12,20 +12,20 @@ A=$1
 shift 1
 
 case "$A" in
-	clean)
+	clean|c)
 		echo "Cleaning.."
 		rm -rf bin
 		;;
-	build)
+	build|b)
 		cdbin
 		cmake .. $*	&& make
 		exit $?
 		;;
-	run)
+	run|r)
 		./bin/kbotpi $*
 		exit $?
 		;;
-	all)
+	all|a)
 		$0 clean &&	$0 build $* && $0 run
 		exit $?
 		;;
@@ -33,14 +33,18 @@ case "$A" in
 		echo "build|[clean|run|all|cmake|make]"
 		exit 1
 		;;
-	cmake)
+	cmake|cm)
 		cdbin
 		cmake .. $*
 		exit $?
 		;;
-	make)
+	make|m)
 		cdbin
 		make $*
+		exit $?
+		;;
+	buildrun|build-run|br)
+		$0 build && $0 run $*
 		exit $?
 		;;
 	*)
