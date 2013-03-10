@@ -22,9 +22,9 @@ case "$A" in
 		exit $?
 		;;
 	run|r)
-		./bin/kbotpi $* 2> error
+		./bin/kbotpi $* 2> ./bin/error
 		ret=$?
-		cat error
+		cat ./bin/error
 		exit $ret
 		;;
 	all|a)

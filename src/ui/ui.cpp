@@ -25,7 +25,7 @@ class menuWidget {
 		menu = new_menu(items);
 		check(menu, "");
 		set_menu_win(menu, w);
-		set_menu_sub(menu, derwin(w,6,38,3,1));
+		set_menu_sub(menu, derwin(w,6,38,4,4));
 		set_menu_mark(menu, "*");
 //		int sy,sx,ey,ex,h,w;
 //		getbegyx(w, sy, sx);
@@ -41,7 +41,7 @@ class menuWidget {
 
 		return;
 		error:
-		debug("e");
+			debug("e");
 	}
 
 	void clean(){
@@ -70,7 +70,6 @@ public:
 	}
 
 	bool input(int &key){
-		debug("input menuWidget %d", key);
 		switch(key){
 			case KEY_DOWN:
 				menu_driver(menu, REQ_DOWN_ITEM);
@@ -99,12 +98,10 @@ public:
 	~mainTab() {}
 
 	void update(){
-		debug("update mainTab");
 		menu.update();
 	}
 
 	bool input(int key){
-		debug("input mainTab %d", key);
 		switch(key){
 			default:
 				return menu.input(key);
@@ -213,7 +210,6 @@ void UI::run(){
 				break;
 			default:
 				currentTab->input(ch);
-				debug("input3 %d %s", ch, currentTab->getName().c_str());
 				break;
 		}
 	}
