@@ -38,7 +38,9 @@ case "$A" in
 		exit $?
 		;;
 	-h|--help|help)
-		echo "build|[clean|run|all|cmake|make]"
+		echo "$0 [option] [...]
+    b[uild] c[lean] r[un] a[ll] cm[ake] m[ake] v[algrind]
+    Normal usage: $0 c |$0 br | $0 bv"
 		exit 1
 		;;
 	cmake|cm)
