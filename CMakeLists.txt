@@ -5,29 +5,31 @@ set (kbotpi_VERSION_MINOR 0)
 set (kbotpi_VERSION_PATCH 1)
 set (kbotpi_VERSION_TWEAK 0)
 
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
 #Options
 option (USE_OPENCV "Use opencv for vision things" OFF)
 option (DEBUG "Produce extra debug info" ON)
+
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 #Boost
 SET(Boost_USE_MULTITHREAD ON) #set a flag
 FIND_PACKAGE(Boost REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
 #Gflags
 FIND_PACKAGE(Gflags REQUIRED)
 INCLUDE_DIRECTORIES(${Gflags_INCLUDE_DIRS})
-LINK_DIRECTORIES(${Gflags_LIBRARY_DIRS})
 
 if (USE_OPENCV)
 	#OpenCV
 	FIND_PACKAGE(OpenCV REQUIRED)
 	INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIR})
-	LINK_DIRECTORIES(${OpenCV_LIBRARY_DIRS})
 endif (USE_OPENCV)
+
+SET(CURSES_USE_NCURSES TRUE)
+FIND_PACKAGE(Curses REQUIRED)
+#FIND_PACKAGE(Panel REQUIRED)
+#FIND_PACKAGE(Menu REQUIRED)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g -W -Wall -Wextra -pedantic -std=c++11")
 
@@ -58,15 +60,13 @@ ENDMACRO()
 include_directories("${PROJECT_BINARY_DIR}")
 HEADER_DIRECTORIES(includeList)
 include_directories(${includeList})
-#include_directories("${PROJECT_SOURCE_DIR}/src")
 #include_directories("${PROJECT_SOURCE_DIR}/src/lib/bstr")
-add_subdirectory(src/lib/bstr)
+#add_subdirectory(src/lib/bstr)
 
 aux_source_directory(src srcRoot)
 aux_source_directory(src/network srcNet)
 aux_source_directory(src/ui srcUI)
 aux_source_directory(src/map srcMap)
-#list(REMOVE_ITEM srcFiles "exclude"
 add_executable(kbotpi ${srcRoot} ${srcNet} ${srcUI} ${srcMap})
-target_link_libraries(kbotpi bstr gflags ncurses menu panel)
+target_link_libraries(kbotpi gflags ncurses menu panel)
 install(TARGETS kbotpi RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
