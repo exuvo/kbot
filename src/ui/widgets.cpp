@@ -54,20 +54,25 @@ void menuWidget::rebuild(){
 		for(unsigned int i=0; i<names.size(); i++){
 			items[i] = new_item(names[i].data(), desc[i].data());
 			check(items[i], "");
+			set_item_userptr(items[i], (void*)(intptr_t)i);
 		}
 		menu = new_menu(items);
 		check(menu, "");
 		set_menu_win(menu, w);
 		set_menu_sub(menu, derwin(w,getmaxy(w)-4,getmaxx(w)-2,3,1));
 		set_menu_mark(menu, " * ");
+		menu_opts_off(menu, O_SHOWDESC|O_NONCYCLIC);
 
-		int sy,sx,height,width;
-		getbegyx(w, sy, sx);
-		getmaxyx(w, height, width);
+		int width,height;
+		getmaxyx(w,height,width);
 		box(w,0,0);
 		mvwaddch(w, 2, 0, ACS_LTEE);
 		mvwhline(w, 2, 1, ACS_HLINE, width-2);
 		mvwaddch(w, 2, width-1, ACS_RTEE);
+
+		mvwaddch(w, height-3, 0, ACS_LTEE);
+		mvwhline(w, height-3, 1, ACS_HLINE, width-2);
+		mvwaddch(w, height-3, width-1, ACS_RTEE);
 
 		wattron(w, color::INFO); 
 		mvwprintw(w, 1, width-2, "?");
@@ -91,26 +96,62 @@ void menuWidget::clean(){
 		if(menu) free_menu(menu);
 	}
 
-menuWidget::menuWidget(WINDOW *win, std::string name, int border): name(name), names(), desc(), size(0),
+menuWidget::menuWidget(WINDOW *win, std::string name, std::initializer_list<menuItem> list): 
+		name(name), names(), desc(), callbacks(), size(0) {
+	for(menuItem i : list){
+		add(i);
+	}
+	
+	int lines=6+names.size();
+	int cols=3+name.size();
+
+	for(unsigned int i=0; i<names.size(); i++){
+		int ns = 5 + names[i].size();
+		int ds = 2 + desc[i].size();
+		if(ns > cols) cols = ns;
+		if(ds > cols) cols = ds;
+	}
+	
+	w = derwin(win, lines, cols, (getmaxy(win)-lines)/2-1, (getmaxx(win)-cols)/2);
+	p = new_panel(w);
+}
+
+menuWidget::menuWidget(WINDOW *win, std::string name, int border): 
+		name(name), names(), desc(), callbacks(), size(0), 
 		w(derwin(win, getmaxy(win) - 2*border, getmaxx(win) - 4*border, border > 0 ? border-1: 0, 2*border)),
 	 	p(new_panel(w)) {}
-menuWidget::menuWidget(WINDOW *win, std::string name, int height, int width): name(name), names(), desc(), size(0),
+menuWidget::menuWidget(WINDOW *win, std::string name, int height, int width):
+		name(name), names(), desc(), callbacks(), size(0),
 		w(derwin(win, height, width, (getmaxy(win)-height)/2-1, (getmaxx(win)-width)/2)),
 	 	p(new_panel(w)) {}
 menuWidget::~menuWidget() {clean(); if(i) delete i;}
 
-void menuWidget::add(std::string name, std::string descript){
+void menuWidget::add(std::string name, std::string description, std::function<void()> callback){
 		names.push_back(name);
-		desc.push_back(descript);
+		desc.push_back(description);
+		callbacks.push_back(callback);
 	}
+
+void menuWidget::add(menuItem item){
+	add(std::get<0>(item), std::get<1>(item), std::get<2>(item));
+}
 
 void menuWidget::update(){
 		if(size != names.size()){
 			clean();
 			rebuild();
 			post_menu(menu);
+			redraw();
 		}
 	}
+
+void menuWidget::redraw(){
+		int lines,cols;
+	  getmaxyx(w, lines, cols);
+		mvwhline(w, lines-2, 1, ' ', cols-2);
+		std::string& text = desc[(intptr_t)item_userptr(current_item(menu))];
+		mvwprintw(w, lines-2, cols/2 - text.size()/2, text.data());
+}
 
 bool menuWidget::input(int &key){
 		if(i){
@@ -127,39 +168,52 @@ bool menuWidget::input(int &key){
 				break;
 			case KEY_DOWN:
 				menu_driver(menu, REQ_DOWN_ITEM);
+				redraw();
 				break;
 			case KEY_UP:
 				menu_driver(menu, REQ_UP_ITEM);
+				redraw();
 				break;
 			case KEY_RIGHT:
 				menu_driver(menu, REQ_RIGHT_ITEM);
+				redraw();
 				break;
 			case KEY_LEFT:
 				menu_driver(menu, REQ_LEFT_ITEM);
+				redraw();
 				break;
 			case KEY_NPAGE:
 				menu_driver(menu, REQ_SCR_DPAGE);
+				redraw();
 				break;
 			case KEY_PPAGE:
 				menu_driver(menu, REQ_SCR_UPAGE);
+				redraw();
 				break;
-			case KEY_ENTER:
+			case KEY_ENTER://Keypad Enter
 			case ' ':
-				//if multi valued menu
-				menu_driver(menu, REQ_TOGGLE_ITEM);
-				//else return with selected value
+			case 10://Enter
+				if(menu_opts(menu) & O_ONEVALUE){
+					std::function<void()> fun = callbacks[(intptr_t)item_userptr(current_item(menu))];
+					if(fun) fun();
+				}else{//multi valued menu
+					menu_driver(menu, REQ_TOGGLE_ITEM);
+				}
 				break;
 			case KEY_BACKSPACE:
 				menu_driver(menu, REQ_BACK_PATTERN);
 				break;
 			case ',':
 				menu_driver(menu, REQ_PREV_MATCH);
+				redraw();
 				break;
 			case '.':
 				menu_driver(menu, REQ_NEXT_MATCH);
+				redraw();
 				break;
 			case KEY_MOUSE:
 				menu_driver(menu, KEY_MOUSE);
+				redraw();
 				break;
 			case 'a':
 			case 'b':
@@ -188,6 +242,7 @@ bool menuWidget::input(int &key){
 			case 'y':
 			case 'z':
 				menu_driver(menu, key);
+				redraw();
 				break;
 			case '?':
 				i = new infoWidget("Menu Help","Arrow keys to move around: < > ^ v\nPageUp and PageDown to scroll.\nSearch by writing item name. Backspace works.\nUse , and . to jump between matching items.\nArrows clears the current search.\nEnter/Space selects the highlighted item.");

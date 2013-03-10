@@ -2,21 +2,27 @@
 #include <iostream>
 #include <thread>
 #include "widgets.h"
+#include "kbotpi.h"
 
 
 class mainTab : public tab {
 private:
 	menuWidget menu;
 public:
-	mainTab(): tab("main"), menu(getWindow(),"Main", 2) {
-		menu.add("a","b"); 
-		menu.add("c","d");
-		menu.add("ca","d");
-		menu.add("cab","d");
-		menu.add("cac","d");
-		menu.add("c","d");
-		menu.add("b","d");
-		menu.add("d","d");
+//	mainTab(): tab("main"), menu(getWindow(),"Main", 2) {
+	mainTab(): tab("main"), menu(getWindow(),"Main", 
+		{
+			menuItem("a","b",nullptr),
+			menuItem("Quit","Ends the program", [](){ui.stop();})
+		}) {
+//		menu.add("a","Does a", [] () {debug("test");}); 
+//		menu.add("c","Does c", [] () {});
+//		menu.add("ca","Does ca", [] () {});
+//		menu.add("cab","Does cab", [] () {});
+//		menu.add("cac","Does cac", [] () {});
+//		menu.add("c","A very long description is placed here.", [] () {});
+//		menu.add("b","d", [] () {});
+//		menu.add("Quit","Ends the program", [] () {ui.stop();});
 	}
 	~mainTab() {}
 
