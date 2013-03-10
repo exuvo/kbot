@@ -27,6 +27,12 @@ case "$A" in
 		cat ./bin/error
 		exit $ret
 		;;
+	valgrind|v)
+		valgrind ./bin/kbotpi $* 2> ./bin/error
+		ret=$?
+		cat ./bin/error
+		exit $ret
+		;;
 	all|a)
 		$0 clean &&	$0 build $* && $0 run
 		exit $?
@@ -47,6 +53,10 @@ case "$A" in
 		;;
 	buildrun|build-run|br)
 		$0 build && $0 run $*
+		exit $?
+		;;
+		bv)
+		$0 build && $0 valgrind $*
 		exit $?
 		;;
 	*)
