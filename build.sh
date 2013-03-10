@@ -28,7 +28,7 @@ case "$A" in
 		exit $ret
 		;;
 	valgrind|v)
-		valgrind ./bin/kbotpi $* 2> ./bin/error
+		valgrind --leak-check=full ./bin/kbotpi $* 2> ./bin/error
 		ret=$?
 		cat ./bin/error
 		exit $ret

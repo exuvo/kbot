@@ -1,99 +1,22 @@
-#include <ncurses.h>
 #include "ui.h"
 #include <iostream>
 #include <thread>
-#include <menu.h>
-#include "dbg.h"
+#include "widgets.h"
 
-
-#define HIGHLIGHT COLOR_PAIR(1)
-
-class menuWidget {
-	std::vector<std::string> names, desc;
-	MENU *menu;
-	ITEM **items;
-	unsigned int size;
-	WINDOW *w;
-
-	void rebuild(){
-		items = (ITEM **) calloc(names.size()+1, sizeof(ITEM*));
-		check_mem(items);
-		for(unsigned int i=0; i<names.size(); i++){
-			items[i] = new_item(names[i].c_str(), desc[i].c_str());
-			check(items[i], "");
-		}
-		menu = new_menu(items);
-		check(menu, "");
-		set_menu_win(menu, w);
-		set_menu_sub(menu, derwin(w,6,38,4,4));
-		set_menu_mark(menu, "*");
-//		int sy,sx,ey,ex,h,w;
-//		getbegyx(w, sy, sx);
-//		getmaxyx(w, ey, ex);
-//		h = ey-sy;
-//		w = ex-sx;
-		box(w,0,0);
-//		mvwprintw(w, 2, w/2, "My menu");
-//		mvwaddch(w, 2, 0, ACS_LTEE);
-//		mvwhline(w, 2, 1, ACS_HLINE, w-2);
-//		mvwaddch(w, 2, w-1, ACS_RTEE);
-		size = names.size();
-
-		return;
-		error:
-			debug("e");
-	}
-
-	void clean(){
-		for(unsigned int i=0; i<names.size(); i++){
-			free_item(items[i]);
-		}
-		free(items);
-		free_menu(menu);
-	}
-
-public:
-	menuWidget(WINDOW *win): names(), desc(), size(0), w(win) {}
-	~menuWidget() {clean();}
-
-	void add(std::string name, std::string descript){
-		names.push_back(name);
-		desc.push_back(descript);
-	}
-
-	void update(){
-		if(size != names.size()){
-			rebuild();
-			post_menu(menu);
-		}
-		wrefresh(w);
-	}
-
-	bool input(int &key){
-		switch(key){
-			case KEY_DOWN:
-				menu_driver(menu, REQ_DOWN_ITEM);
-				break;
-			case KEY_UP:
-				menu_driver(menu, REQ_UP_ITEM);
-				break;
-			default:
-				return false;
-		}
-		return true;
-	}
-};
 
 class mainTab : public tab {
 private:
-	WINDOW *menuW;
-	PANEL *menuP;
 	menuWidget menu;
 public:
-	mainTab(): tab("main"), menuW(derwin(win, 10,10,5,5)), menuP(new_panel(menuW)), menu(menuW) {
-//	mainTab(): tab("main"), menuW(getWindow()), menu(menuW) {
+	mainTab(): tab("main"), menu(getWindow(),"Main", 2) {
 		menu.add("a","b"); 
 		menu.add("c","d");
+		menu.add("ca","d");
+		menu.add("cab","d");
+		menu.add("cac","d");
+		menu.add("c","d");
+		menu.add("b","d");
+		menu.add("d","d");
 	}
 	~mainTab() {}
 
@@ -136,9 +59,9 @@ void UI::drawHeader(){
 	for(tab* t : tabs){
 		std::string &name = t->getName();
 
-		if(currentTab == t) wattron(w, HIGHLIGHT);
-		mvwaddstr(w, 0, col, name.c_str());
-		if(currentTab == t) wattroff(w, HIGHLIGHT);
+		if(currentTab == t) wattron(w, color::ACTIVE);
+		mvwaddstr(w, 0, col, name.data());
+		if(currentTab == t) wattroff(w, color::ACTIVE);
 		col += name.size() + 1;
 	}
 }
@@ -151,18 +74,19 @@ void UI::run(){
 	keypad(stdscr, true);
 	timeout(0);
 	start_color();
+	curs_set(0);//Invisible cursor
 
 	init_pair(1, COLOR_RED, COLOR_BLACK);
 	init_pair(2, COLOR_GREEN, COLOR_BLACK);
 	init_pair(3, COLOR_BLUE, COLOR_BLACK);
 	init_pair(4, COLOR_CYAN, COLOR_BLACK);
 
-	//tabs.push_back(dynamic_cast<tab*>(new mainTab()));	
 	tabs.push_back(new mainTab());	
-	//tabs.push_back(new tab("nav"));	
-	//tabs.push_back(new tab("settings"));	
-	//tabs.push_back(new tab("log"));	
-	//tabs.push_back(new tab("_"));	
+	tabs.push_back(new dummyTab("nav"));//2D map
+	tabs.push_back(new dummyTab("settings"));//bios style
+	tabs.push_back(new dummyTab("log"));//read error file
+	tabs.push_back(new dummyTab("sensors"));//menu list with subsystems	
+	tabs.push_back(new dummyTab("network"));//list current connections
 
 	for(tab* t : tabs){
 		hide_panel(t->getPanel());
@@ -196,9 +120,11 @@ void UI::run(){
 			case KEY_F(12):
 				ch -= KEY_F(1);
 				if(ch < (int)tabs.size()){
+					currentTab->input(KEY_CTAB);
 					hide_panel(currentTab->getPanel());
 					currentTab = tabs[ch];
 					show_panel(currentTab->getPanel());
+					currentTab->input(KEY_STAB);
 					drawHeader();
 				}
 				break;
