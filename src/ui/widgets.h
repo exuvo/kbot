@@ -5,21 +5,23 @@
 #include <functional>
 #include <stdint.h>
 
+using namespace std;
+
 class infoWidget {
-	std::string name,desc;
+	string name,desc;
 	WINDOW *w;
 	PANEL *p;
 
 public:
-	infoWidget(std::string name,std::string desc);
+	infoWidget(string name,string desc);
 	~infoWidget();
 };
 
-typedef std::tuple <std::string, std::string, std::function<void()>> menuItem;
+typedef tuple <string, string, function<void()>> menuItem;
 class menuWidget {
-	std::string name;
-	std::vector<std::string> names, desc;
-	std::vector<std::function<void()>> callbacks;
+	string name;
+	vector<string> names, desc;
+	vector<function<void()>> callbacks;
 	MENU *menu = nullptr;
 	ITEM **items = nullptr;
 	unsigned int size;
@@ -32,11 +34,11 @@ class menuWidget {
 	void redraw();
 
 public:
-	menuWidget(WINDOW *win, std::string name, std::initializer_list<menuItem> list);
-	menuWidget(WINDOW *win, std::string name, int border);
-	menuWidget(WINDOW *win, std::string name, int height, int width);
+	menuWidget(WINDOW *win, string name, initializer_list<menuItem> list);
+	menuWidget(WINDOW *win, string name, int border);
+	menuWidget(WINDOW *win, string name, int height, int width);
 	~menuWidget();
-	void add(std::string name, std::string description, std::function<void()> callback);
+	void add(string name, string description, function<void()> callback);
 	void add(menuItem item);
 	void update();
 	bool input(int &key);

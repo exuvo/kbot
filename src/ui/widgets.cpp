@@ -1,7 +1,9 @@
 #include "ui.h"
 #include "widgets.h"
 
-infoWidget::infoWidget(std::string name,std::string desc): name(name), desc(desc) {
+using namespace std;
+
+infoWidget::infoWidget(string name,string desc): name(name), desc(desc) {
 		int lines=4,cols=2+name.size();
 
 		{
@@ -96,7 +98,7 @@ void menuWidget::clean(){
 		if(menu) free_menu(menu);
 	}
 
-menuWidget::menuWidget(WINDOW *win, std::string name, std::initializer_list<menuItem> list): 
+menuWidget::menuWidget(WINDOW *win, string name, initializer_list<menuItem> list): 
 		name(name), names(), desc(), callbacks(), size(0) {
 	for(menuItem i : list){
 		add(i);
@@ -116,24 +118,24 @@ menuWidget::menuWidget(WINDOW *win, std::string name, std::initializer_list<menu
 	p = new_panel(w);
 }
 
-menuWidget::menuWidget(WINDOW *win, std::string name, int border): 
+menuWidget::menuWidget(WINDOW *win, string name, int border): 
 		name(name), names(), desc(), callbacks(), size(0), 
 		w(derwin(win, getmaxy(win) - 2*border, getmaxx(win) - 4*border, border > 0 ? border-1: 0, 2*border)),
 	 	p(new_panel(w)) {}
-menuWidget::menuWidget(WINDOW *win, std::string name, int height, int width):
+menuWidget::menuWidget(WINDOW *win, string name, int height, int width):
 		name(name), names(), desc(), callbacks(), size(0),
 		w(derwin(win, height, width, (getmaxy(win)-height)/2-1, (getmaxx(win)-width)/2)),
 	 	p(new_panel(w)) {}
 menuWidget::~menuWidget() {clean(); if(i) delete i;}
 
-void menuWidget::add(std::string name, std::string description, std::function<void()> callback){
+void menuWidget::add(string name, string description, function<void()> callback){
 		names.push_back(name);
 		desc.push_back(description);
 		callbacks.push_back(callback);
 	}
 
 void menuWidget::add(menuItem item){
-	add(std::get<0>(item), std::get<1>(item), std::get<2>(item));
+	add(get<0>(item), get<1>(item), get<2>(item));
 }
 
 void menuWidget::update(){
@@ -149,7 +151,7 @@ void menuWidget::redraw(){
 		int lines,cols;
 	  getmaxyx(w, lines, cols);
 		mvwhline(w, lines-2, 1, ' ', cols-2);
-		std::string& text = desc[(intptr_t)item_userptr(current_item(menu))];
+		string& text = desc[(intptr_t)item_userptr(current_item(menu))];
 		mvwprintw(w, lines-2, cols/2 - text.size()/2, text.data());
 }
 
@@ -194,7 +196,7 @@ bool menuWidget::input(int &key){
 			case ' ':
 			case 10://Enter
 				if(menu_opts(menu) & O_ONEVALUE){
-					std::function<void()> fun = callbacks[(intptr_t)item_userptr(current_item(menu))];
+					function<void()> fun = callbacks[(intptr_t)item_userptr(current_item(menu))];
 					if(fun) fun();
 				}else{//multi valued menu
 					menu_driver(menu, REQ_TOGGLE_ITEM);

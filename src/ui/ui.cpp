@@ -4,6 +4,7 @@
 #include "widgets.h"
 #include "kbotpi.h"
 
+using namespace std;
 
 class mainTab : public tab {
 private:
@@ -15,13 +16,7 @@ public:
 			menuItem("a","b",nullptr),
 			menuItem("Quit","Ends the program", [](){ui.stop();})
 		}) {
-//		menu.add("a","Does a", [] () {debug("test");}); 
-//		menu.add("c","Does c", [] () {});
-//		menu.add("ca","Does ca", [] () {});
-//		menu.add("cab","Does cab", [] () {});
-//		menu.add("cac","Does cac", [] () {});
 //		menu.add("c","A very long description is placed here.", [] () {});
-//		menu.add("b","d", [] () {});
 //		menu.add("Quit","Ends the program", [] () {ui.stop();});
 	}
 	~mainTab() {}
@@ -49,7 +44,7 @@ void UI::initHeader(){
 
 	int col=1;
 	for(tab* t : tabs){
-		std::string &name = t->getName();
+		string &name = t->getName();
 		col += name.size();
 		mvwaddch(w, 1, col, ACS_BTEE);
 		mvwaddch(w, 0, col, ACS_VLINE);
@@ -63,7 +58,7 @@ void UI::drawHeader(){
 
 	int col=1;
 	for(tab* t : tabs){
-		std::string &name = t->getName();
+		string &name = t->getName();
 
 		if(currentTab == t) wattron(w, color::ACTIVE);
 		mvwaddstr(w, 0, col, name.data());
@@ -73,7 +68,7 @@ void UI::drawHeader(){
 }
 
 void UI::run(){
-	std::cout << "Starting UI thread\n";
+	cout << "Starting UI thread\n";
 	initscr();
 	cbreak();//Disable line buffering
 	noecho();
@@ -138,7 +133,7 @@ void UI::run(){
 				stop();
 				break;
 			case ERR:
-				std::this_thread::sleep_for(std::chrono::milliseconds(200));
+				this_thread::sleep_for(chrono::milliseconds(200));
 				break;
 			default:
 				currentTab->input(ch);
@@ -147,6 +142,6 @@ void UI::run(){
 	}
 
 	endwin();
-	std::cout << "Stopping UI thread\n";
+	cout << "Stopping UI thread\n";
 }
 
