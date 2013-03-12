@@ -2,8 +2,8 @@ cmake_minimum_required (VERSION 2.8)
 project (kbotpi)
 set (kbotpi_VERSION_MAJOR 0)
 set (kbotpi_VERSION_MINOR 0)
-set (kbotpi_VERSION_PATCH 1)
-set (kbotpi_VERSION_TWEAK 0)
+set (kbotpi_VERSION_PATCH 4)
+set (kbotpi_VERSION_TWEAK 2)
 
 #Options
 option (USE_OPENCV "Use opencv for vision things" OFF)
