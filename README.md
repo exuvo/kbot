@@ -17,6 +17,7 @@ supporting high-level remote control from a pc or mobile phone.
 
 **Program environment**
 * language: c++
+* libraries: ROS
 * make utility: cmake
 * version control: git (@github)
 * Runs on a Raspberry Pi Model B with 256MB RAM, 800Mhz
