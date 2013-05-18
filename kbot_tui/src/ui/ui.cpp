@@ -3,6 +3,7 @@
 #include <thread>
 #include "widgets.h"
 #include "kbotpi.h"
+#include "settings.h"
 
 using namespace std;
 
@@ -84,7 +85,7 @@ void UI::run(){
 
 	tabs.push_back(new mainTab());	
 	tabs.push_back(new dummyTab("nav"));//2D map
-	tabs.push_back(new dummyTab("settings"));//bios style
+	tabs.push_back(new settingsTab());//bios style
 	tabs.push_back(new dummyTab("log"));//read error file
 	tabs.push_back(new dummyTab("sensors"));//menu list with subsystems	
 	tabs.push_back(new dummyTab("network"));//list current connections

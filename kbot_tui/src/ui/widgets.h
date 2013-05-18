@@ -4,6 +4,9 @@
 #include <menu.h>
 #include <functional>
 #include <stdint.h>
+#include <ncurses.h>
+#include <panel.h>
+#include <vector>
 
 using namespace std;
 
