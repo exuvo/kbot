@@ -1,36 +1,39 @@
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "serial.h"
+#include "parser.h"
+#include <gflags/gflags.h>
 
-#include <sstream>
+using namespace std;
+
+DEFINE_int32(baud, 9600, "Baudrate.");
+DEFINE_string(port, "", "Serial port.");
 
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "kbot_bridge");
-
   ros::NodeHandle n;
 
-  ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
+	google::SetVersionString("Best version.");
+  google::SetUsageMessage("Write something clever here.");
+  google::ParseCommandLineFlags(&argc, &argv, true);
 
+
+	if(!open(FLAGS_port, FLAGS_baud)){
+		ROS_FATAL("Failed to open serial port");
+		return(1);
+	}
+	ROS_INFO("Serial port open");
+	
   ros::Rate loop_rate(10);
 
-  int count = 0;
-  while (ros::ok())
-  {
-    std_msgs::String msg;
-
-    std::stringstream ss;
-    ss << "hello world " << count;
-    msg.data = ss.str();
-
-    ROS_INFO("%s", msg.data.c_str());
-
-    chatter_pub.publish(msg);
+  while (ros::ok()){
+		receive();
+		transmit();
 
     ros::spinOnce();
-
     loop_rate.sleep();
-    ++count;
   }
 
 
