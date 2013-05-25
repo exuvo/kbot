@@ -21,7 +21,8 @@ supporting high-level remote control from a pc or mobile phone.
 * make utility: cmake
 * version control: git (@github)
 * Runs on a Raspberry Pi Model B with 256MB RAM, 800Mhz
-
+* Will run on a http://www.parallella.org/board/ in the far future.
+* Code style http://www.ros.org/wiki/CppStyleGuide
 
 **Objectives**
 * Read data from serial port connected to lpc1768
