@@ -19,7 +19,6 @@ int main(int argc, char **argv)
   google::SetUsageMessage("Write something clever here.");
   google::ParseCommandLineFlags(&argc, &argv, true);
 
-
 	if(!open(FLAGS_port, FLAGS_baud)){
 		ROS_FATAL("Failed to open serial port");
 		return(1);
