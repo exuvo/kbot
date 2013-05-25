@@ -21,6 +21,7 @@ supporting high-level remote control from a pc or mobile phone.
 * make utility: cmake
 * version control: git (@github)
 * Runs on a Raspberry Pi Model B with 256MB RAM, 800Mhz
+* Code style http://www.ros.org/wiki/CppStyleGuide
 
 
 **Objectives**
