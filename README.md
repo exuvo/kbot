@@ -52,3 +52,8 @@ supporting high-level remote control from a pc or mobile phone.
   * Get: Take images
   * Detection: Detect objects/lines/patterns
   * Memory: Remember objects from last frames?
+
+**ROS Libraries**
+* MoveIt
+* OctoMap
+* serial
