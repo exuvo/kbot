@@ -57,3 +57,4 @@ supporting high-level remote control from a pc or mobile phone.
 * MoveIt
 * OctoMap
 * serial
+* tf2
