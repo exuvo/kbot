@@ -2,11 +2,11 @@
 #define PARSER_H
 
 enum class M_Type: uint8_t {
-// When changing remember to update to/from methods.
+// When changing remember to update to/from methods. // TODO update M_TYPE_COUNT instead.
   //Ping, Power, Sonar, Tracks, Dome, Console, Text
   Ping=0, Power=1, Sonar=2, Tracks=3, Dome=4, Console=5, Text=6 // explicit just to be sure
 };
-
+#define M_TYPE_COUNT 6
 
 M_Type toMType(uint8_t id);
 uint8_t fromMType(M_Type type);

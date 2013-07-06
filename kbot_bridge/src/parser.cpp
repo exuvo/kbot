@@ -10,12 +10,10 @@ using namespace std;
 
 void parse(Message* m){
 
-
-
 }
 
 M_Type toMType(uint8_t id){
-  if (id >= 0 && id <= 6) {
+  if (id >= 0 && id <= M_TYPE_COUNT) {
     return (M_Type)id;
   } else {
     throw logic_error(__FILE__ ": enum M_Type out of range");

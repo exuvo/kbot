@@ -36,6 +36,16 @@ void resetMessage(){
 void receive(){
   checkConnection();
   
+  // reads:
+  //  4 bytes:
+  //     1 byte  to compare with START_BYTE
+  //     2 bytes into _msg->len
+  //     1 byte  into _msg->type
+  //  len+1 bytes:
+  //   len bytes into _msg->data
+  //     1 byte  to compare with _msg->checksum
+
+  
   size_t amount;
   while((amount=port.available()) > 0){
     if(_pos > 0){
@@ -43,7 +53,7 @@ void receive(){
       port.read(&(_msg->data[_pos]), amount);
       _pos += amount;
 
-      if(_pos = _msg->length + 4 && port.available()){
+      if(_pos == _msg->length + 4 && port.available()){
         uint8_t checksum;
         port.read(&checksum, 1);
         _msg->calcChecksum();
@@ -64,14 +74,12 @@ void receive(){
         ROS_WARN_THROTTLE(1, "Serial: Expected start byte, got this instead: %u", b);
         return;
       }
-      
       uint8_t d[3];
       port.read(d, 3);
       uint16_t len = d[0] << 8 | d[1];
-      _msg = new Message(len, toMType(d[2]));
+      _msg = new Message(len, toMType(d[2])); // TODO catch exception?
       _pos = 4;
     }
-    
   }
 }
 
