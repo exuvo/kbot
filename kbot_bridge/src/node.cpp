@@ -10,8 +10,7 @@ using namespace std;
 DEFINE_int32(baud, 9600, "Baudrate.");
 DEFINE_string(port, "", "Serial port.");
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
   ros::init(argc, argv, "kbot_bridge");
   ros::NodeHandle n;
 
@@ -27,8 +26,7 @@ int main(int argc, char **argv)
   
   ros::Rate loop_rate(10);
 
-  while(ros::ok())
-  {
+  while(ros::ok()){
     receive();
     transmit();
 

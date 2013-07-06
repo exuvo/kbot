@@ -3,14 +3,15 @@
 
 enum class M_Type: uint8_t {
 // When changing remember to update to/from methods.
-  Ping, Power, Sonar, Tracks, Dome, Console, Text
+  //Ping, Power, Sonar, Tracks, Dome, Console, Text
+  Ping=0, Power=1, Sonar=2, Tracks=3, Dome=4, Console=5, Text=6 // explicit just to be sure
 };
+
 
 M_Type toMType(uint8_t id);
 uint8_t fromMType(M_Type type);
 
-class Message
-{
+class Message{
 private:
 public:
   uint16_t length;
