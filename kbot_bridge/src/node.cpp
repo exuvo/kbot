@@ -1,4 +1,3 @@
-
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "serial.h"
@@ -23,6 +22,9 @@ int main(int argc, char **argv){
     return(1);
   }
   ROS_INFO("Serial port open");
+  
+  //TODO add output messages: sonar(Range), Odometry, Imu, TimeReference, 
+  //TODO add input messages; motorControl(forward, left)
   
   ros::Rate loop_rate(10);
 
