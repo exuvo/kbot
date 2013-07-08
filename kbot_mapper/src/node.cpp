@@ -7,17 +7,12 @@
 
 octomap::OcTree *tree;
 
-/* The current position of the kbot. */
-octomap::point3d sensor_origin;
-
-/* The direction the vector is pointing in. Allways normalized. */
-octomap::point3d sensor_direction;
+octomap::pose6d robot_pose;
 
 /*
- * The radian distance between rays
- * when converting an sonar arc to rays.
+ * The distance between ray end-points on the arc.
  */
-double angle_diff = 5.0 * 3.14159/180.0;
+double ray_diff = 5.0 * 3.14159/180.0; // TODO
 
 
 void handleSonarMsg(const sensor_msgs::Range::ConstPtr& msg){
@@ -31,23 +26,11 @@ void handleSonarMsg(const sensor_msgs::Range::ConstPtr& msg){
   // TODO use msg->header timestamp for something?
   // TODO use msg->radiation_type for something? for spam?
 
-  double len = msg->range;
-  // TODO ignore out-of-range messages instead?
-  if (len < msg->min_range) {
-    len = msg->min_range;
-  } else if (len > msg->max_range){
-    len = msg->max_range;
-  }
-
 
   octomap::Pointcloud *scan = new octomap::Pointcloud();
+  addArc(scan, robot_pose, msg->range, msg->field_of_view, ray_diff);
 
-  arc3d arc;
-  arc.vec = sensor_direction;
-  arc.angle = msg->field_of_view;
-  addArc(scan, arc, angle_diff);
-
-  tree->insertPointCloud(scan, sensor_origin);
+  tree->insertPointCloud(scan, robot_pose.trans());
 }
 
 
