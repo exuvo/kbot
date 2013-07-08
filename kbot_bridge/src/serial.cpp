@@ -24,7 +24,11 @@ serial::Serial& getSerial(){
 void checkConnection(){
 	if(!port.isOpen()){
 		ROS_WARN_THROTTLE(10, "Serial port closed, reopening");
-		port.open();
+		try{
+			port.open();
+		} catch (const serial::IOException& ex){
+			ROS_ERROR_THROTTLE(10, "IOException while attempting to reopen serial port: %s", ex.what());
+		}
 	}
 }
 
