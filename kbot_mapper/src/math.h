@@ -4,18 +4,16 @@
 #include <octomap/OcTree.h>
 #include <octomap/octomap.h>
 
-struct arc3d {
-  octomap::point3d vec; // points to center of arc.
-  double angle; // radians
-};
-
 /*
  * Divides arc into rays and adds those to cloud.
  * The rays will have angle_diff radians between them.
  */
-void addArc(octomap::Pointcloud *cloud, arc3d arc, double angle_diff);
+void addArc(octomap::Pointcloud *cloud, octomap::pose6d robot_pose, double range, double field_of_view, double ray_diff);
 
-octomap::point3d rot(std::vector<double> matrix, octomap::point3d v);
+/*
+ * Multiplies the matrix with the vector, like: v' = Mv.
+ */
+octomap::point3d mul(std::vector<double> matrix, octomap::point3d v);
 
 #endif
 
