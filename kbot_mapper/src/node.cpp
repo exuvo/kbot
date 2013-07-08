@@ -4,19 +4,19 @@
 
 
 void subscriptionCallback(const sensor_msgs::Range::ConstPtr& msg){
-  //TODO
+  // TODO do something with Range msg
 }
 
-int main(int argc char **argv){
+int main(int argc, char **argv){
   ros::init(argc, argv, "kbot_mapper");
-  ros::Nodehandle n;
+  ros::NodeHandle n;
 
   google::SetVersionString("TODO version"); // TODO version
-  google::SetusageMessage("TODO usage"); // TODO usage msg
+  google::SetUsageMessage("TODO usage"); // TODO usage msg
   google::ParseCommandLineFlags(&argc, &argv, true);
 
 
-  ros::Subscriber sub m.subscribe("TODO", 1000, callback);
+  ros::Subscriber sub = n.subscribe("TODO", 1000, subscriptionCallback);
 
   // TODO octomap
   // TODO moveIt

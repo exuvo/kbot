@@ -4,11 +4,12 @@ project(kbot_mapper)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS octomap roscpp sensor_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+find_package(octomap REQUIRED)
 find_package(Gflags REQUIRED)
 
 
@@ -62,9 +63,10 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include
+include_directories(
   ${catkin_INCLUDE_DIRS}
   ${Gflags_INCLUDE_DIRS}
+  ${OCTOMAP_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -77,7 +79,7 @@ include_directories(include
 aux_source_directory(src source)
 add_executable(kbot_mapper ${source})
 
-set_target_properties(kbot_mapper PROPERTIES COMPILE_FLAGS -std=c++1)
+set_target_properties(kbot_mapper PROPERTIES COMPILE_FLAGS -std=c++11)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -88,6 +90,10 @@ set_target_properties(kbot_mapper PROPERTIES COMPILE_FLAGS -std=c++1)
    ${catkin_LIBRARIES}
    gflags
  )
+
+link_libraries(
+   ${OCTOMAP_LIBRARIES}
+)
 
 #############
 ## Install ##
