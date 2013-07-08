@@ -1,5 +1,5 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef KBOT_BRIDGE_PARSER_H
+#define KBOT_BRIDGE_PARSER_H
 
 enum class M_Type: uint8_t {
 // When changing remember to update to/from methods. // TODO update M_TYPE_COUNT instead.
@@ -25,4 +25,4 @@ public:
 
 void parse(Message* m);
 
-#endif /* PARSER_H */
+#endif /* KBOT_BRIDGE_PARSER_H */

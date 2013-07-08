@@ -63,7 +63,7 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
+include_directories(include
   ${catkin_INCLUDE_DIRS}
   ${Gflags_INCLUDE_DIRS}
   ${OCTOMAP_INCLUDE_DIRS}
@@ -76,8 +76,8 @@ include_directories(
 
 ## Declare a cpp executable
 # add_executable(kbot_mapper_node src/kbot_mapper_node.cpp)
-aux_source_directory(src source)
-add_executable(kbot_mapper ${source})
+#aux_source_directory(src source)
+add_executable(kbot_mapper src/node.cpp src/math.cpp)
 
 set_target_properties(kbot_mapper PROPERTIES COMPILE_FLAGS -std=c++11)
 
@@ -88,12 +88,17 @@ set_target_properties(kbot_mapper PROPERTIES COMPILE_FLAGS -std=c++11)
 ## Specify libraries to link a library or executable target against
  target_link_libraries(kbot_mapper
    ${catkin_LIBRARIES}
+   ${OCTOMAP_LIBRARIES}
    gflags
  )
 
 link_libraries(
-   ${OCTOMAP_LIBRARIES}
+  ${OCTOMAP_LIBRARIES}
 )
+link_directories(
+  ${OCTOMAP_LIBRARY_DIRS}
+)
+    
 
 #############
 ## Install ##

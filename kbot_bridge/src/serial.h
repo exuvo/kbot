@@ -1,5 +1,5 @@
-#ifndef SERIAL2_H
-#define SERIAL2_H
+#ifndef KBOT_BRIDGE_SERIAL_H
+#define KBOT_BRIDGE_SERIAL_H
 
 #include <string>
 #include "serial/serial.h"
@@ -15,4 +15,4 @@ void checkSerial();
 void receive();
 void transmit();
 
-#endif /* SERIAL2_H */
+#endif /* KBOT_BRIDGE_SERIAL_H*/
