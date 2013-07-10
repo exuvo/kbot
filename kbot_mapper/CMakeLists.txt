@@ -77,7 +77,7 @@ include_directories(include
 ## Declare a cpp executable
 # add_executable(kbot_mapper_node src/kbot_mapper_node.cpp)
 #aux_source_directory(src source)
-add_executable(kbot_mapper src/node.cpp src/math.cpp)
+add_executable(kbot_mapper src/node.cpp)
 
 set_target_properties(kbot_mapper PROPERTIES COMPILE_FLAGS -std=c++11)
 
