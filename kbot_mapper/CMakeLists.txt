@@ -4,7 +4,7 @@ project(kbot_mapper)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp kbot_bridge message_generation)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -37,10 +37,10 @@ find_package(Gflags REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   sensor_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  kbot_bridge
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -53,7 +53,7 @@ find_package(Gflags REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES kbot_mapper
-#  CATKIN_DEPENDS octomap roscpp sensor_msgs
+  CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
 
@@ -77,20 +77,20 @@ include_directories(include
 ## Declare a cpp executable
 # add_executable(kbot_mapper_node src/kbot_mapper_node.cpp)
 #aux_source_directory(src source)
-add_executable(kbot_mapper src/node.cpp src/math.cpp)
+add_executable(kbot_mapper src/node.cpp)
 
 set_target_properties(kbot_mapper PROPERTIES COMPILE_FLAGS -std=c++11)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(kbot_mapper_node kbot_mapper_generate_messages_cpp)
+add_dependencies(kbot_mapper kbot_mapper_generate_messages_cpp kbot_bridge_generate_messages_cpp kbot_mapper_gencpp)
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(kbot_mapper
-   ${catkin_LIBRARIES}
-   ${OCTOMAP_LIBRARIES}
-   gflags
- )
+target_link_libraries(kbot_mapper
+  ${catkin_LIBRARIES}
+  ${OCTOMAP_LIBRARIES}
+  gflags
+)
 
 link_libraries(
   ${OCTOMAP_LIBRARIES}

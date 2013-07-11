@@ -4,7 +4,7 @@ project(kbot_bridge)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs serial)
+find_package(catkin REQUIRED COMPONENTS roscpp std_msgs serial message_generation)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -22,11 +22,10 @@ find_package(Gflags REQUIRED)
 #######################################
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  SonarPing.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -36,10 +35,10 @@ find_package(Gflags REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -52,7 +51,7 @@ find_package(Gflags REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES kbot_bridge
-#  CATKIN_DEPENDS other_catkin_pkg
+  CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
 
@@ -62,7 +61,11 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${Gflags_INCLUDE_DIRS})
+include_directories(include
+  ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ${Gflags_INCLUDE_DIRS}
+)
 
 ## Declare a cpp library
 # add_library(kbot_bridge
@@ -77,13 +80,13 @@ set_target_properties(kbot_bridge PROPERTIES COMPILE_FLAGS -std=c++11)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(kbot_bridge_node kbot_bridge_generate_messages_cpp)
+add_dependencies(kbot_bridge kbot_bridge_generate_messages_cpp kbot_bridge_gencpp)
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(kbot_bridge
-   ${catkin_LIBRARIES}
-   gflags
- )
+target_link_libraries(kbot_bridge
+  ${catkin_LIBRARIES}
+  gflags
+)
 
 #############
 ## Install ##
