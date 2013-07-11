@@ -5,54 +5,61 @@
 #include "serial.h"
 //#include "dbg.h"
 #include "parser.h"
+#include "kbot_bridge/SonarPing.h"
+#include "node.h"
 
 using namespace std;
 
+void parseSonar(Message* m) {
+  kbot_bridge::SonarPing msg;
+  // TODO parse
+  
+  // TODO manually generate msg->header?
+  
+  msg.pose.position.x = 0.0; 
+  msg.pose.position.y =  0.0; 
+  msg.pose.position.z =  0.0; 
+
+  msg.pose.orientation.x =  0.0; 
+  msg.pose.orientation.y =  0.0; 
+  msg.pose.orientation.z =  0.0; 
+  msg.pose.orientation.w =  0.0; 
+  
+  // TODO manually generate range->header?
+  msg.range.radiation_type = 0; // 0 = ULTRASOUND
+  msg.range.field_of_view = 0.0;
+  msg.range.min_range = 0.0;
+  msg.range.max_range = 0.0;
+  msg.range.range = 0.0;
+  
+  sonar_pub.publish(msg);
+}
+
 void parse(Message* m){
-  switch(m.type) {
+  switch(m->type) {
     case M_Type::Ping:
       // TODO
-      return;
+      break;
     case M_Type::Power:
       // TODO
-      return; 
+      break; 
     case M_Type::Sonar:
-      kbot_bridge::SonarPing msg;
-      // TODO parse
-      
-      // TODO manually generate msg->header?
-      
-      msg->pose->position->x = 0.0; 
-      msg->pose->position->y =  0.0; 
-      msg->pose->position->z =  0.0; 
-
-      msg->pose->orientation->x =  0.0; 
-      msg->pose->orientation->y =  0.0; 
-      msg->pose->orientation->z =  0.0; 
-      msg->pose->orientation->w =  0.0; 
-      
-      // TODO manually generate range->header?
-      msg->range->radiation_type = 0; // 0 = ULTRASOUND
-      msg->range->field_of_view = 0.0;
-      msg->range->min_range = 0.0;
-      msg->range->max_range = 0.0;
-      msg->range->range = 0.0;
-      
-      sonar_pub.publish(msg);
-      return;
+      parseSonar(m);
+      break;
     case M_Type::Tracks:
       // TODO
-      return;
+      break;
     case M_Type::Dome:
       // TODO
-      return;
+      break;
     case M_Type::Console:
       // TODO
-      return;
+      break;
     case M_Type::Text:
       // TODO
-      return;
-    default: // TODO err
+      break;
+    default:
+      break; // TODO err
   }
 }
 

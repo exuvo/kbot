@@ -4,23 +4,23 @@
 #include <octomap/octomap.h>
 #include <octomap/OcTree.h>
 #include "math.h"
-#include <kbot_bridge/SonarPing.h>
+#include "kbot_bridge/SonarPing.h"
 
 octomap::OcTree *tree;
 
 double resolution = 0.01; // meters
 
-void addArc(octomap::Pointcloud *cloud, octomap::pose6d robot_pose, double angle, double range, double field_of_view, double ray_diff) {
+void addArc(octomap::Pointcloud *cloud, octomap::pose6d sensor_pose, double range, double field_of_view, double ray_diff) {
   
   // radian diff between each ray
   double diff_angle = ray_diff / range; // arc: theta = L/r
 
-  robot_pose.rot().inv_IP(); // needed to convert FROM robot-based coords
+  sensor_pose.rot().inv_IP(); // needed to convert FROM sensor-based coords
 
-  octomap::point3d ray(1,0,0); // in robot-base
-
+  octomap::point3d ray(1,0,0); // in sensor-base
+  
   // rotate (around z) to left-most ray
-  ray.rotate_IP(0, 0, angle-field_of_view/2 + fmod(field_of_view, diff_angle));
+  ray.rotate_IP(0, 0, -field_of_view/2 + fmod(field_of_view, diff_angle));
 
   double cos_diff_angle = cos(diff_angle), // 2D rotation matrix:
          sin_diff_angle = sin(diff_angle); //  (c -s)
@@ -28,7 +28,7 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d robot_pose, double angle
 
   for (int a = -field_of_view/2; a < field_of_view/2; a += diff_angle) {
     // convert to world-oriented coords before add
-    cloud->push_back(robot_pose.rot().rotate(ray));
+    cloud->push_back(sensor_pose.rot().rotate(ray));
 
     // rotate counter-clockwise, around z (i.e. 2D).
     double x = ray.x(), y = ray.y(); 
@@ -40,16 +40,16 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d robot_pose, double angle
 
 void handleSonarMsg(const kbot_bridge::SonarPing::ConstPtr& msg){
   
-  octomap::pose6d robot_pose; // TODO new msg type
-  double angle; // TODO new msg type
-  
+  octomap::pose6d sensor_pose;
+  sensor_pose.trans().x() = msg->pose.position.x;
+
   // TODO use msg->header timestamp for something?
   // TODO use msg->radiation_type for something? for spam?
 
   octomap::Pointcloud *scan = new octomap::Pointcloud();
-  addArc(scan, robot_pose, angle, msg->range, msg->field_of_view, resolution);
+  addArc(scan, sensor_pose, msg->range.range, msg->range.field_of_view, resolution);
 
-  tree->insertPointCloud(scan, robot_pose.trans());
+  tree->insertPointCloud(scan, sensor_pose.trans());
 }
 
 
