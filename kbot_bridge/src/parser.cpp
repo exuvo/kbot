@@ -41,25 +41,29 @@ void parse(Message* m){
       // TODO
       break;
     case M_Type::Power:
-      // TODO
-      break; 
+      // TODO kbot_bridge::Power
+      return; 
     case M_Type::Sonar:
-      parseSonar(m);
-      break;
-    case M_Type::Tracks:
       // TODO
-      break;
+      return;
+    case M_Type::Odometry:
+      // TODO nav_msgs::Odometry
+      return;
     case M_Type::Dome:
-      // TODO
-      break;
+      // TODO geometry_msgs::Pose
+      return;
     case M_Type::Console:
       // TODO
       break;
     case M_Type::Text:
       // TODO
-      break;
-    default:
-      break; // TODO err
+    case M_Type::IMU:
+      // TODO sensor_msgs::Imu
+      return;
+    case M_Type::Time:
+      // TODO sensor_msgs::TimeReference
+      return;
+    default: // TODO err
   }
 }
 
