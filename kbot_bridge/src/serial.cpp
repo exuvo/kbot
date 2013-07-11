@@ -152,7 +152,7 @@ uint16_t Message::expectedLength(){
     case M_Type::Ping: 
 			return 1;
     case M_Type::Power:
-			return 0;
+			return 13;
     case M_Type::Sonar:
 			return 58;
     case M_Type::Odometry:
