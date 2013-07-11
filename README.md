@@ -36,7 +36,7 @@ supporting high-level remote control from a pc or mobile phone.
 * Detect things with camera
   * library openCV
   * objects to detect: doors, colored items
-  * utilize GPU https://github.com/hermanhermitage/videocoreiv
+  * utilize Epiphany coprocessor http://www.parallella.org/board/
 
 **Structure**
 * lpc1768 communication: get sensor values, send motor commands
