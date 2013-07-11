@@ -42,9 +42,9 @@ void parseSonar(Message* m) {
 void parse(Message* m){
 	lastReceive = chrono::steady_clock::now();
 
-  switch(m.type) {
+  switch(m->type) {
     case M_Type::Ping:
-      pingRoundTrip = chrono::duration_cast<chrono::milliseconds>(lastReceive - pingSent).count();
+      pingRoundTrip = chrono::duration_cast<chrono::milliseconds>(lastReceive - pingSent);
       return;
     case M_Type::Power:
       // TODO kbot_bridge::Power
