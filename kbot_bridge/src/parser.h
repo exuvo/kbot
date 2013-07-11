@@ -7,9 +7,6 @@ enum class M_Type: uint8_t {
 };
 #define M_TYPE_COUNT 6
 
-M_Type toMType(uint8_t id);
-uint8_t fromMType(M_Type type);
-
 class Message{
 private:
 public:
@@ -18,8 +15,11 @@ public:
   uint8_t* data;
   uint8_t checksum; // type + data
   Message(uint16_t length_, M_Type type_): length(length_), type(type_), data(new uint8_t[length]) {}
+  Message(uint16_t length_, uint8_t id);
  ~Message(){delete[] data;}
+	uint8_t typeToInt();
   void calcChecksum();
+	uint16_t expectedLength();
 };
 
 void parse(Message* m);

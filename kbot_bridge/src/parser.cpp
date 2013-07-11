@@ -42,6 +42,11 @@ void parseSonar(Message* m) {
 void parse(Message* m){
 	lastReceive = chrono::steady_clock::now();
 
+	if(m->length != m->expectedLength()){
+		ROS_WARN_THROTTLE(10, "Message length does not match expected length for type:");
+		return;
+	}
+
   switch(m->type) {
     case M_Type::Ping:
       pingRoundTrip = chrono::duration_cast<chrono::milliseconds>(lastReceive - pingSent);
@@ -50,7 +55,7 @@ void parse(Message* m){
       // TODO kbot_bridge::Power
       return; 
     case M_Type::Sonar:
-      // TODO
+	    parseSonar(m);
       return;
     case M_Type::Odometry:
       // TODO nav_msgs::Odometry
@@ -74,35 +79,27 @@ void parse(Message* m){
   }
 }
 
-M_Type toMType(uint8_t id){
-  if (id >= 0 && id <= M_TYPE_COUNT) {
-    return (M_Type)id;
-  } else {
-    throw logic_error(__FILE__ ": enum M_Type out of range");
-  }
-//  switch(id) {
-//    case 0: return M_Type::Ping;
-//    case 1: return M_Type::Power;
-//    case 2: return M_Type::Sonar;
-//    case 3: return M_Type::Tracks;
-//    case 4: return M_Type::Dome;
-//    case 5: return M_Type::Console;
-//    case 6: return M_Type::Text;
-//    default: throw logic_error(__FILE__ ": enum M_Type out of range");
-//  }
-}
-
 uint8_t fromMType(M_Type type){
   return (uint8_t) type;
-//  switch(type) {
-//    case M_Type::Ping:    return 0;
-//    case M_Type::Power:   return 1;
-//    case M_Type::Sonar:   return 2;
-//    case M_Type::Tracks:  return 3;
-//    case M_Type::Dome:    return 4;
-//    case M_Type::Console: return 5;
-//    case M_Type::Text:    return 6;
-//  }
+}
+
+Message::Message(uint16_t length_, uint8_t id){
+  switch(id) {
+    case fromMType(M_Type::Ping): return M_Type::Ping;
+    case fromMType(M_Type::Power): return M_Type::Power;
+    case fromMType(M_Type::Sonar): return M_Type::Sonar;
+    case fromMType(M_Type::Tracks): return M_Type::Tracks;
+    case fromMType(M_Type::Dome): return M_Type::Dome;
+    case fromMType(M_Type::Console): return M_Type::Console;
+    case fromMType(M_Type::Text): return M_Type::Text;
+    case fromMType(M_Type::): return M_Type::;
+    case fromMType(M_Type::): return M_Type::;
+    default: throw logic_error(__FILE__ ": enum M_Type out of range");
+  }
+}
+
+uint8_t Message::typeToInt(){
+  return fromMType(type);
 }
 
 void Message::calcChecksum(){

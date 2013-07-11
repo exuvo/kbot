@@ -81,7 +81,7 @@ void receive(){
       uint8_t d[3];
       port.read(d, 3);
       uint16_t len = d[0] << 8 | d[1];
-      _msg = new Message(len, toMType(d[2])); // TODO catch exception?
+      _msg = new Message(len, d[2]); // TODO catch exception?
       _pos = 4;
     }
   }
