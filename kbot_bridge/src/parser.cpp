@@ -63,7 +63,8 @@ void parse(Message* m){
     case M_Type::Time:
       // TODO sensor_msgs::TimeReference
       return;
-    default: // TODO err
+    default:
+      return; // TODO err
   }
 }
 
