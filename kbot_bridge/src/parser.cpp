@@ -14,22 +14,28 @@ void parse(Message* m){
       // TODO
       return;
     case M_Type::Power:
-      // TODO
+      // TODO kbot_bridge::Power
       return; 
     case M_Type::Sonar:
       // TODO
       return;
-    case M_Type::Tracks:
-      // TODO
+    case M_Type::Odometry:
+      // TODO nav_msgs::Odometry
       return;
     case M_Type::Dome:
-      // TODO
+      // TODO geometry_msgs::Pose
       return;
     case M_Type::Console:
       // TODO
       return;
     case M_Type::Text:
       // TODO
+      return;
+    case M_Type::IMU:
+      // TODO sensor_msgs::Imu
+      return;
+    case M_Type::Time:
+      // TODO sensor_msgs::TimeReference
       return;
     default: // TODO err
   }
