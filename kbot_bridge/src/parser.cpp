@@ -27,10 +27,10 @@ void parseSonar(Message* m) {
 	uint16_t distance = m->readUInt16();
   msg.pose.position.x = m->readInt32(); 
   msg.pose.position.y = m->readInt32(); 
-  msg.pose.position.z = 0.2; 
+  msg.pose.position.z = 0.2; //TODO measure sensor height
 
   msg.range.radiation_type = sensor_msgs::Range::ULTRASOUND;
-  msg.range.field_of_view = 0.0;
+  msg.range.field_of_view = 0.0; //TODO measure field of view
   msg.range.min_range = 0.1;
   msg.range.max_range = 7.7;
   msg.range.range = distance / 100.0f;
@@ -44,7 +44,15 @@ void parseSonar(Message* m) {
 
 void parsePower(Message* m){
 	kbot_bridge::Power msg;
-
+	
+	msg.mainVoltage = m->readUInt16() / 100.0f;
+	msg.mainVoltageDiff = m->readInt16() / 100.0f;
+	msg.mainCurrent = m->readInt16() / 10.0f;
+	msg.mainCurrentDiff = m->readInt16() / 10.0f;
+	secondaryVoltage = m->readInt16() / 1000.0f;
+	mainStatus = m->readUInt8();
+	status = m->readUInt8();
+	charging = m->readUInt8();
 
 	power_pub.publish(msg);
 }
