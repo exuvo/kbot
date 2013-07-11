@@ -7,8 +7,12 @@
 #include "parser.h"
 #include "kbot_bridge/SonarPing.h"
 #include "node.h"
+#include <chrono>
 
 using namespace std;
+
+chrono::time_point<chrono::steady_clock> lastReceive, pingSent;
+chrono::milliseconds pingRoundTrip;
 
 void parseSonar(Message* m) {
   kbot_bridge::SonarPing msg;
@@ -35,11 +39,12 @@ void parseSonar(Message* m) {
   sonar_pub.publish(msg);
 }
 
-void parse(Message* m){
-  switch(m->type) {
+	lastReceive = chrono::steady_clock::now();
+
+  switch(m.type) {
     case M_Type::Ping:
-      // TODO
-      break;
+      pingRoundTrip = chrono::duration_cast<chrono::milliseconds>(lastReceive - pingSent).count();
+      return;
     case M_Type::Power:
       // TODO kbot_bridge::Power
       return; 
