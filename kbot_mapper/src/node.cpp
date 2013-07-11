@@ -4,45 +4,42 @@
 #include <octomap/octomap.h>
 #include <octomap/OcTree.h>
 #include "math.h"
+#include <kbot_bridge/SonarPing.h>
 
 octomap::OcTree *tree;
 
 double resolution = 0.01; // meters
 
 void addArc(octomap::Pointcloud *cloud, octomap::pose6d robot_pose, double angle, double range, double field_of_view, double ray_diff) {
-  // TODO test (don't trust my math)
-  // TODO optimize?
   
-  double diff_angle = ray_diff / range; // theta = L/r
+  // radian diff between each ray
+  double diff_angle = ray_diff / range; // arc: theta = L/r
 
-  robot_pose.rot().inv_IP();
+  robot_pose.rot().inv_IP(); // needed to convert FROM robot-based coords
 
-  octomap::point3d v(1,0,0); // robot-oriented vector.
-  v.rotate_IP(0, 0, angle-field_of_view/2 + fmod(field_of_view, diff_angle));
+  octomap::point3d ray(1,0,0); // in robot-base
 
-  double cos_diff_angle = cos(diff_angle),
-         sin_diff_angle = sin(diff_angle);
+  // rotate (around z) to left-most ray
+  ray.rotate_IP(0, 0, angle-field_of_view/2 + fmod(field_of_view, diff_angle));
+
+  double cos_diff_angle = cos(diff_angle), // 2D rotation matrix:
+         sin_diff_angle = sin(diff_angle); //  (c -s)
+                                           //  (s  c)
 
   for (int a = -field_of_view/2; a < field_of_view/2; a += diff_angle) {
-    // add as world-oriented vector.
-    cloud->push_back(robot_pose.rot().rotate(v));
+    // convert to world-oriented coords before add
+    cloud->push_back(robot_pose.rot().rotate(ray));
 
-    // rotate robot-oriented vector around z. 
-    double x = v.x(), y = v.y();
-    v.x() = x * cos_diff_angle + y * -sin_diff_angle;
-    v.y() = x * sin_diff_angle + y * cos_diff_angle;
+    // rotate counter-clockwise, around z (i.e. 2D).
+    double x = ray.x(), y = ray.y(); 
+    ray.x() = x * cos_diff_angle + y * -sin_diff_angle; // (c -s)   (x)
+    ray.y() = x * sin_diff_angle + y * cos_diff_angle;  // (s  c) * (y)
   }
 
 }
 
-void handleSonarMsg(const sensor_msgs::Range::ConstPtr& msg){ // TODO change msg type
+void handleSonarMsg(const kbot_bridge::SonarPing::ConstPtr& msg){
   
-  if (msg->min_range > msg->max_range) {
-    // TODO err
-    return;
-  }
-
-
   octomap::pose6d robot_pose; // TODO new msg type
   double angle; // TODO new msg type
   
