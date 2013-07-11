@@ -25,6 +25,8 @@ find_package(Gflags REQUIRED)
 add_message_files(
   FILES
   SonarPing.msg
+	Power.msg
+	MovementController.msg
 )
 
 ## Generate services in the 'srv' folder

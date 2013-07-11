@@ -3,19 +3,19 @@
 #include "serial.h"
 #include "parser.h"
 #include <gflags/gflags.h>
-#include "node.h"
 #include "kbot_bridge/SonarPing.h"
+#include "kbot_bridge/Power.h"
 
 using namespace std;
-
-ros::Publisher sonar_pub;
 
 DEFINE_int32(baud, 9600, "Baudrate.");
 DEFINE_string(port, "", "Serial port.");
 
+ros::NodeHandle node;
+ros::Publisher sonar_pub, power_pub;
+
 int main(int argc, char **argv){
   ros::init(argc, argv, "kbot_bridge");
-  ros::NodeHandle n;
 
   google::SetVersionString("Best version.");
   google::SetUsageMessage("Write something clever here.");
@@ -30,8 +30,8 @@ int main(int argc, char **argv){
   //TODO add output messages: sonar(Range), Odometry, Imu, TimeReference, 
   //TODO add input messages; motorControl(forward, left)
 
-  sonar_pub = n.advertise<kbot_bridge::SonarPing>("sonar_pings", 1000);
-
+  sonar_pub = node.advertise<kbot_bridge::SonarPing>("sonar_pings", 100);
+  power_pub = node.advertise<kbot_bridge::Power>("power", 10);
   
   ros::Rate loop_rate(10);
 
