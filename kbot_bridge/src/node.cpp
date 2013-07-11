@@ -25,6 +25,9 @@ int main(int argc, char **argv){
   
   //TODO add output messages: sonar(Range), Odometry, Imu, TimeReference, 
   //TODO add input messages; motorControl(forward, left)
+
+  ros::Publisher sonar_pub = n.advertise<kbot_bridge::SonarPing>("sonar_pings", 1000);
+
   
   ros::Rate loop_rate(10);
 
