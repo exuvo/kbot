@@ -39,6 +39,7 @@ void parseSonar(Message* m) {
   sonar_pub.publish(msg);
 }
 
+void parse(Message* m){
 	lastReceive = chrono::steady_clock::now();
 
   switch(m.type) {
