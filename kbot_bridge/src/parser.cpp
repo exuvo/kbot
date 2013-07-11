@@ -9,7 +9,30 @@
 using namespace std;
 
 void parse(Message* m){
-
+  switch(m.type) {
+    case M_Type::Ping:
+      // TODO
+      return;
+    case M_Type::Power:
+      // TODO
+      return; 
+    case M_Type::Sonar:
+      // TODO
+      return;
+    case M_Type::Tracks:
+      // TODO
+      return;
+    case M_Type::Dome:
+      // TODO
+      return;
+    case M_Type::Console:
+      // TODO
+      return;
+    case M_Type::Text:
+      // TODO
+      return;
+    default: // TODO err
+  }
 }
 
 M_Type toMType(uint8_t id){
