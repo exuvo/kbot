@@ -4,7 +4,7 @@ project(kbot_bridge)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs serial message_generation)
+find_package(catkin REQUIRED COMPONENTS roscpp std_msgs serial message_generation geometry_msgs sensor_msgs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -38,6 +38,8 @@ add_message_files(
 generate_messages(
   DEPENDENCIES
   std_msgs
+	geometry_msgs
+	sensor_msgs
 )
 
 ###################################
@@ -51,7 +53,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES kbot_bridge
-  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS message_runtime geometry_msgs sensor_msgs
 #  DEPENDS system_lib
 )
 
