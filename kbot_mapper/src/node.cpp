@@ -10,12 +10,20 @@ octomap::OcTree *tree;
 
 double resolution = 0.01; // meters
 
-void addArc(octomap::Pointcloud *cloud, octomap::pose6d sensor_pose, double range, double field_of_view, double ray_diff) {
+/** Adds rays from the arc to the pointcloud.
+ *
+ * @param cloud to put rays in.
+ * @param orientation arc relation to 3D world.
+ * @param range radius of arc. (meters)
+ * @param field_of_view angle of arc (radians).
+ * @param ray_diff distance between ray end-points. (meters)
+ */
+void addArc(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
   
   // radian diff between each ray
   double diff_angle = ray_diff / range; // arc: theta = L/r
 
-  sensor_pose.rot().inv_IP(); // needed to convert FROM sensor-based coords
+  orientation.rot().inv_IP(); // needed to convert FROM sensor-based coords
 
   octomap::point3d ray(1,0,0); // in sensor-base
   
@@ -26,16 +34,16 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d sensor_pose, double rang
          sin_diff_angle = sin(diff_angle); //  (c -s)
                                            //  (s  c)
 
-  for (int a = -field_of_view/2; a < field_of_view/2; a += diff_angle) {
+  for (int a = -field_of_view/2; a <= field_of_view/2; a += diff_angle) {
     
-    // convert to world-oriented coords
-    octomap::point3d v = sensor_pose.rot().rotate(ray);
+    // convert to world-based coords
+    octomap::point3d v = orientation.rot().rotate(ray);
 
     cloud->push_back(v);
 
-    ROS_DEBUG("Added ray: sensor-based: (%f,%f,%f), world-based: (%f,%f,%f).", ray.x(), ray.y(), ray.z(), v.x(), v.y(), v.z());
+    ROS_DEBUG("Added ray. sensor-based coords: (%f,%f,%f), world-based coords: (%f,%f,%f).", ray.x(), ray.y(), ray.z(), v.x(), v.y(), v.z());
 
-    // rotate counter-clockwise, around z (i.e. 2D).
+    // rotate clockwise, around z (i.e. in 2D-plane).
     double x = ray.x(), y = ray.y(); 
     ray.x() = x * cos_diff_angle + y * -sin_diff_angle; // (c -s)   (x)
     ray.y() = x * sin_diff_angle + y * cos_diff_angle;  // (s  c) * (y)
@@ -45,16 +53,29 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d sensor_pose, double rang
 
 void handleSonarMsg(const kbot_bridge::SonarPing::ConstPtr& msg){
   
-  octomap::pose6d sensor_pose;
-  sensor_pose.trans().x() = msg->pose.position.x;
-
   // TODO use msg->header timestamp for something?
   // TODO use msg->radiation_type for something? for spam?
+  
+
+  octomap::point3d sensor_position;
+  sensor_position.x() = msg->pose.position.x;
+  sensor_position.y() = msg->pose.position.y;
+  sensor_position.z() = msg->pose.position.z;
+
+  // note: can't reach type octomath:Quarternion directly
+  // so have to go through pose6d.
+  octomap::pose6d sensor_orientation;
+  sensor_orientation.rot().x() = msg->pose.orientation.x;
+  sensor_orientation.rot().y() = msg->pose.orientation.y;
+  sensor_orientation.rot().z() = msg->pose.orientation.z;
+  sensor_orientation.rot().u() = msg->pose.orientation.w;
+
 
   octomap::Pointcloud *scan = new octomap::Pointcloud();
-  addArc(scan, sensor_pose, msg->range.range, msg->range.field_of_view, resolution);
 
-  tree->insertPointCloud(scan, sensor_pose.trans());
+  addArc(scan, sensor_orientation, msg->range.range, msg->range.field_of_view, resolution);
+
+  tree->insertPointCloud(scan, sensor_position);
 }
 
 
