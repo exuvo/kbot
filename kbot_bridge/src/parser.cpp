@@ -49,10 +49,10 @@ void parsePower(Message* m){
 	msg.mainVoltageDiff = m->readInt16() / 100.0f;
 	msg.mainCurrent = m->readInt16() / 10.0f;
 	msg.mainCurrentDiff = m->readInt16() / 10.0f;
-	secondaryVoltage = m->readInt16() / 1000.0f;
-	mainStatus = m->readUInt8();
-	status = m->readUInt8();
-	charging = m->readUInt8();
+	msg.secondaryVoltage = m->readInt16() / 1000.0f;
+	msg.mainStatus = m->readUInt8();
+	msg.status = m->readUInt8();
+	msg.charging = m->readUInt8();
 
 	power_pub.publish(msg);
 }
