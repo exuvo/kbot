@@ -27,8 +27,13 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d sensor_pose, double rang
                                            //  (s  c)
 
   for (int a = -field_of_view/2; a < field_of_view/2; a += diff_angle) {
-    // convert to world-oriented coords before add
-    cloud->push_back(sensor_pose.rot().rotate(ray));
+    
+    // convert to world-oriented coords
+    octomap::point3d v = sensor_pose.rot().rotate(ray);
+
+    cloud->push_back(v);
+
+    ROS_DEBUG("Added ray: sensor-based: (%f,%f,%f), world-based: (%f,%f,%f).", ray.x(), ray.y(), ray.z(), v.x(), v.y(), v.z());
 
     // rotate counter-clockwise, around z (i.e. 2D).
     double x = ray.x(), y = ray.y(); 
