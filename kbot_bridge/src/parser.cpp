@@ -43,7 +43,7 @@ void parse(Message* m){
 	lastReceive = chrono::steady_clock::now();
 
 	if(m->length != m->expectedLength()){
-		ROS_WARN_THROTTLE(10, "Message length does not match expected length for type:");
+		ROS_WARN_THROTTLE(10, "Message length does not match expected length for type: %c", (char)m->type);
 		return;
 	}
 
@@ -79,23 +79,44 @@ void parse(Message* m){
   }
 }
 
-uint8_t fromMType(M_Type type){
+constexpr uint8_t fromMType(M_Type type){
   return (uint8_t) type;
 }
 
 Message::Message(uint16_t length_, uint8_t id){
+	M_Type mtype;
   switch(id) {
-    case fromMType(M_Type::Ping): return M_Type::Ping;
-    case fromMType(M_Type::Power): return M_Type::Power;
-    case fromMType(M_Type::Sonar): return M_Type::Sonar;
-    case fromMType(M_Type::Tracks): return M_Type::Tracks;
-    case fromMType(M_Type::Dome): return M_Type::Dome;
-    case fromMType(M_Type::Console): return M_Type::Console;
-    case fromMType(M_Type::Text): return M_Type::Text;
-    case fromMType(M_Type::): return M_Type::;
-    case fromMType(M_Type::): return M_Type::;
-    default: throw logic_error(__FILE__ ": enum M_Type out of range");
+    case fromMType(M_Type::Ping): 
+			mtype = M_Type::Ping;
+			break;
+    case fromMType(M_Type::Power):
+			mtype = M_Type::Power;
+			break;
+    case fromMType(M_Type::Sonar):
+			mtype = M_Type::Sonar;
+			break;
+    case fromMType(M_Type::Odometry):
+			mtype = M_Type::Odometry;
+			break;
+    case fromMType(M_Type::Dome):
+	 		mtype = M_Type::Dome;
+			break;
+    case fromMType(M_Type::Console):
+			mtype = M_Type::Console;
+			break;
+    case fromMType(M_Type::Text):
+ 			mtype = M_Type::Text;
+			break;
+    case fromMType(M_Type::IMU):
+ 			mtype = M_Type::IMU;
+			break;
+    case fromMType(M_Type::Time):
+ 			mtype = M_Type::Time;
+			break;
+    default: throw out_of_range(__FILE__ ": enum M_Type");
   }
+
+ Message(length_, mtype);
 }
 
 uint8_t Message::typeToInt(){
@@ -105,5 +126,29 @@ uint8_t Message::typeToInt(){
 void Message::calcChecksum(){
   for(int i=0; i< length; i++){
     checksum += data[i];
+  }
+}
+
+uint16_t Message::expectedLength(){
+  switch(type) {
+    case M_Type::Ping: 
+			return 0;
+    case M_Type::Power:
+			return 0;
+    case M_Type::Sonar:
+			return 0;
+    case M_Type::Odometry:
+			return 0;
+    case M_Type::Dome:
+			return 0;
+    case M_Type::Console:
+			return 0;
+    case M_Type::Text:
+			return 0;
+    case M_Type::IMU:
+			return 0;
+    case M_Type::Time:
+			return 0;
+    default: throw out_of_range(__FILE__ ": enum M_Type");
   }
 }

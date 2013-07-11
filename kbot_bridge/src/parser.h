@@ -2,10 +2,9 @@
 #define KBOT_BRIDGE_PARSER_H
 
 enum class M_Type: uint8_t {
-// When changing remember to update to/from methods. // TODO update M_TYPE_COUNT instead.
-  Ping='p', Power='P', Sonar='s', Odometry='o', Dome='d', Console='c', Text='t', IMU='i', Time='T' // explicit just to be sure
+// When changing remember to update to/from methods. 
+  Ping='p', Power='P', Sonar='s', Odometry='o', Dome='d', Console='c', Text='t', IMU='i', Time='T' 
 };
-#define M_TYPE_COUNT 6
 
 class Message{
 private:
