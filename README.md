@@ -40,12 +40,12 @@ supporting high-level remote control from a pc or mobile phone.
 
 **Structure**
 * lpc1768 communication: get sensor values, send motor commands
-  * Serial port reader
+  * Serial port reader (kbot\_bridge)
 * Network: Maintain list of connected clients.
   * Parser: Understand commands. aware where a request came from and respond correctly.
   * Connection sources: wifi tcp, xbee
 * Map
-  * Mapping: Take sonar pings from lpc1768 and place on map as a arc
+  * Mapping: Take sonar pings from lpc1768 (kbot\_bridge) and place on map as a arc (kbot\_mapper)
   * Navigation: navigate around things
   * Drift correction: try to correct for sensor drift over time
 * Vision
@@ -53,8 +53,9 @@ supporting high-level remote control from a pc or mobile phone.
   * Detection: Detect objects/lines/patterns
   * Memory: Remember objects from last frames?
 
-**ROS Libraries**
-* MoveIt
-* OctoMap
-* serial
-* tf2
+**Libraries**
+* ROS: MoveIt
+* ROS: OctoMap
+* ROS: serial
+* ROS: tf2
+* GOOGLE: gflags
