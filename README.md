@@ -45,7 +45,7 @@ supporting high-level remote control from a pc or mobile phone.
   * Parser: Understand commands. aware where a request came from and respond correctly.
   * Connection sources: wifi tcp, xbee
 * Map
-  * Mapping: Take sonar pings from lpc1768 (kbot\_bridge) and place on map as a arc (kbot\_mapper)
+  * Mapping: Take sonar pings from lpc1768 (kbot\_bridge) and place on map as an arc (kbot\_mapper).
   * Navigation: navigate around things
   * Drift correction: try to correct for sensor drift over time
 * Vision
@@ -54,8 +54,10 @@ supporting high-level remote control from a pc or mobile phone.
   * Memory: Remember objects from last frames?
 
 **Libraries**
-* ROS: MoveIt
-* ROS: OctoMap
-* ROS: serial
-* ROS: tf2
-* GOOGLE: gflags
+* ROS
+    * MoveIt
+    * OctoMap
+    * serial
+    * tf2
+* GOOGLE
+    * gflags
