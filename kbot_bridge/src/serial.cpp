@@ -204,7 +204,7 @@ uint8_t Message::n(){
 	throw out_of_range(__FILE__ "trying to read beyond end of Message");
 }
 
-void Message::n(uint8_t* p, uint16_t len){
+void Message::n(uint8_t* p, uint8_t len){
 	while(len-- >= 0){
 		*p++ = n();
 	}
