@@ -44,9 +44,9 @@ void receive(){
   checkConnection();
   
   // reads:
-  //  4 bytes:
+  //  3 bytes:
   //     1 byte  to compare with START_BYTE
-  //     2 bytes into _msg->len
+  //     1 bytes into _msg->len
   //     1 byte  into _msg->type
   //  len+1 bytes:
   //   len bytes into _msg->data
@@ -56,11 +56,11 @@ void receive(){
   size_t amount;
   while((amount=port.available()) > 0){
     if(_pos > 0){
-      amount = min((unsigned int)amount, _msg->length + 4 - _pos);
+      amount = min((unsigned int)amount, _msg->length + 3 - _pos);
       port.read(&(_msg->data[_pos]), amount);
       _pos += amount;
 
-      if(_pos == _msg->length + 4 && port.available()){
+      if(_pos == _msg->length + 3 && port.available()){
         uint8_t checksum;
         port.read(&checksum, 1);
         _msg->calcChecksum();
@@ -73,7 +73,7 @@ void receive(){
         resetMessage();
       }
   
-    }else if(amount >= 4){
+    }else if(amount >= 3){
       uint8_t b;
       port.read(&b, 1);
 
@@ -81,12 +81,12 @@ void receive(){
         ROS_WARN_THROTTLE(1, "Serial: Expected start byte, got this instead: %u", b);
         return;
       }
-      uint8_t d[3];
-      port.read(d, 3);
-      uint16_t len = d[0] << 8 | d[1];
+      uint8_t d[2];
+      port.read(d, 2);
+      uint16_t len = d[0];
 			if(len > 0){
-	      _msg = new Message(len - 1, d[2]); // TODO catch exception?
-      	_pos = 4;
+	      _msg = new Message(len - 1, d[1]); // TODO catch exception?
+      	_pos = 3;
 			}
     }
   }
@@ -101,7 +101,7 @@ constexpr uint8_t fromMType(M_Type type){
   return (uint8_t) type;
 }
 
-Message::Message(uint16_t length_, uint8_t id){
+Message::Message(uint8_t length_, uint8_t id){
 	M_Type mtype;
   switch(id) {
     case fromMType(M_Type::Ping): 
@@ -142,12 +142,13 @@ uint8_t Message::typeToInt(){
 }
 
 void Message::calcChecksum(){
+	checksum = typeToInt();
   for(int i=0; i< length; i++){
     checksum += data[i];
   }
 }
 
-uint16_t Message::expectedLength(){
+uint8_t Message::expectedLength(){
   switch(type) {
     case M_Type::Ping: 
 			return 1;
