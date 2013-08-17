@@ -6,6 +6,8 @@ It uses active sonar and a camera to navigate its surroundings.
 The goal is for it to be able to survive independently while also 
 supporting high-level remote control from a pc or mobile phone.
 
+Build log http://elektronikforumet.com/forum/viewtopic.php?f=3&t=66441 (requires registration to view pictures).
+
 **Communication**
 * internal
   * with lpc1768 (rest of the robot) using serial port (UART).
