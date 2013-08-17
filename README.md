@@ -20,8 +20,7 @@ supporting high-level remote control from a pc or mobile phone.
 * libraries: ROS
 * make utility: cmake
 * version control: git (@github)
-* Runs on a Raspberry Pi Model B with 256MB RAM, 800Mhz
-* Will run on a http://www.parallella.org/board/ in the far future.
+* Runs on a Parallella (http://www.parallella.org/board/)
 * Code style http://www.ros.org/wiki/CppStyleGuide
 
 **Objectives**
@@ -34,18 +33,18 @@ supporting high-level remote control from a pc or mobile phone.
 * Create map from sonar data
   * avoid hitting walls
 * Detect things with camera
-  * library openCV
+  * library openCV?
   * objects to detect: doors, colored items
-  * utilize Epiphany coprocessor http://www.parallella.org/board/
+  * utilize Epiphany coprocessor
 
 **Structure**
 * lpc1768 communication: get sensor values, send motor commands
   * Serial port reader (kbot\_bridge)
-* Network: Maintain list of connected clients.
-  * Parser: Understand commands. aware where a request came from and respond correctly.
+* Network: Maintain list of connected clients
+  * Parser: Understand commands. aware where a request came from and respond correctly
   * Connection sources: wifi tcp, xbee
 * Map
-  * Mapping: Take sonar pings from lpc1768 (kbot\_bridge) and place on map as an arc (kbot\_mapper).
+  * Mapping: Take sonar pings from lpc1768 (kbot\_bridge) and place on map as an arc (kbot\_mapper)
   * Navigation: navigate around things
   * Drift correction: try to correct for sensor drift over time
 * Vision
