@@ -10,14 +10,14 @@ octomap::OcTree *tree;
 
 double resolution = 0.01; // meters
 
-/** Adds rays from the arc to the pointcloud.
- *
- * @param cloud to put rays in.
- * @param orientation arc relation to 3D world.
- * @param range radius of arc. (meters)
- * @param field_of_view angle of arc (radians).
- * @param ray_diff distance between ray end-points. (meters)
- */
+
+
+void addRay(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
+  octomap::point3d ray(range,0,0); // in sensor-base
+  octomap::point3d v = orientation.rot().rotate(ray); // in world-base
+  cloud->push_back(v);
+}
+
 void addArc(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
   
   // radian diff between each ray
@@ -25,7 +25,7 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d orientation, double rang
 
   orientation.rot().inv_IP(); // needed to convert FROM sensor-based coords
 
-  octomap::point3d ray(1,0,0); // in sensor-base
+  octomap::point3d ray(range,0,0); // in sensor-base
   
   // rotate (around z) to left-most ray
   ray.rotate_IP(0, 0, -field_of_view/2 + fmod(field_of_view, diff_angle));
@@ -51,6 +51,12 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d orientation, double rang
 
 }
 
+void addCone(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
+  // TODO
+  // TODO how to evenly distribute rays? randomly? circularly?
+}
+
+
 void handleSonarMsg(const kbot_bridge::SonarPing::ConstPtr& msg){
   
   // TODO use msg->header timestamp for something?
@@ -73,7 +79,9 @@ void handleSonarMsg(const kbot_bridge::SonarPing::ConstPtr& msg){
 
   octomap::Pointcloud *scan = new octomap::Pointcloud();
 
+  //addRay(scan, sensor_orientation, msg->range.range, msg->range.field_of_view, resolution);
   addArc(scan, sensor_orientation, msg->range.range, msg->range.field_of_view, resolution);
+  //addCone(scan, sensor_orientation, msg->range.range, msg->range.field_of_view, resolution);
 
   tree->insertPointCloud(scan, sensor_position);
 }
@@ -84,8 +92,8 @@ int main(int argc, char **argv){
   ros::NodeHandle n;
 
   google::SetVersionString("TODO version"); // TODO version
-  google::SetUsageMessage("TODO usage"); // TODO usage msg
-  google::ParseCommandLineFlags(&argc, &argv, true); // TODO conflict with ros flags?
+  google::SetUsageMessage("TODO usage"); // TODO usage-msg
+  google::ParseCommandLineFlags(&argc, &argv, true); // TODO conflicts with ros flags?
 
 
   ros::Subscriber sub = n.subscribe("TODO", 1000, handleSonarMsg);
@@ -101,10 +109,12 @@ int main(int argc, char **argv){
   //tree = new octomap::OcTree(filename);
 
 
+  // TODO config srvs?
+  // TODO add srvs for adding ray/arc/cone.
+
   // TODO moveIt
 
-
-  ros::spin();
+  ros::spin(); // TODO build pointcloud from multiple msg and insert it at end of each spin (instead of at end of each msg)?
 
 
   // TODO save tree to file?
