@@ -21,6 +21,7 @@ public:
   ~setting();
 	virtual bool input(int key);
 	virtual void load();
+	virtual void save();
 };
 
 template <typename T> class settingChoice : setting{

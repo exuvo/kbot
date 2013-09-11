@@ -26,7 +26,7 @@ public:
 	PANEL* getPanel() {return pan;}
 	WINDOW* getWindow() {return win;}
 	string& getName() {return _name;}
-	//Sends KEY_CTAB when tab loses focus and KEY_STAB at gain focus.
+	//Sends KEY_CTAB when tab loses focus and KEY_STAB when gains focus.
 	virtual bool input(int key)  = 0;//{debug("i"); return false;};
 	virtual void update() = 0;
 
