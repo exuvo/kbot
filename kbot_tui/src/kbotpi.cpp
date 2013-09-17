@@ -11,6 +11,7 @@ using namespace std;
 DEFINE_bool(crash, false, "Crash faster than usual."); 
 
 UI ui;
+Network network;
 
 int main( int argc, char* argv[] ){
 	string version = util::format("%u.%u.%u.%u\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_TWEAK);
@@ -25,10 +26,10 @@ int main( int argc, char* argv[] ){
 	}
 
 	ui.start();
-
-
+	network.start();
 
 	ui.join();
+	network.join();
 	cout << "Main exit\n";
 }
 
