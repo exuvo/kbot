@@ -3,7 +3,7 @@
 #include "sensor_msgs/Range.h"
 #include <octomap/octomap.h>
 #include <octomap/OcTree.h>
-#include "math.h"
+#include <math.h>
 #include "kbot_bridge/SonarPing.h"
 
 octomap::OcTree *tree;
@@ -52,8 +52,28 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d orientation, double rang
 }
 
 void addCone(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
-  // TODO
-  // TODO how to evenly distribute rays? randomly? circularly?
+  // TODO how to evenly distribute rays? randomly? circularly? effectiveness?
+
+  orientation.rot().inv_IP(); // needed to convert FROM sensor-based coords
+
+  double rstep = range/ray_diff;
+  for (double r = 0; r < range; r+=rstep) {
+    double rot_angle = ray_diff/r,
+           circ = 2*M_PI*r,
+           cr = cos(rot_angle), // for rot-matrix.
+           sr = sin(rot_angle); //
+    octomap::point3d ray(r,0,range); // note: length may be >range (cone).
+
+    int no = circ/ray_diff;
+    while (--no >= 0) {
+      octomap::point3d v = orientation.rot().rotate(ray);
+      cloud->push_back(v);
+      double x = ray.x(), y = ray.y(); 
+      ray.x() = x * cr + y * -sr; // (c -s)   (x)
+      ray.y() = x * sr + y * cr;  // (s  c) * (y)
+    }
+  }
+
 }
 
 

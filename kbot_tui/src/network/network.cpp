@@ -1,7 +1,7 @@
 
 #include "network.h"
 #include "std_msgs/String.h"
-#include <gflags/gfalgs.h>
+#include <gflags/gflags.h>
 
 Network::Network(){
 
