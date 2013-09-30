@@ -60,5 +60,5 @@ Build log http://elektronikforumet.com/forum/viewtopic.php?f=3&t=66441 (requires
     * OctoMap
     * [serial](https://github.com/wjwwood/serial)
     * tf2
-* GOOGLE
+* External
     * [gflags](https://code.google.com/p/gflags/)
