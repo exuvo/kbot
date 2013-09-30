@@ -58,7 +58,7 @@ Build log http://elektronikforumet.com/forum/viewtopic.php?f=3&t=66441 (requires
 * ROS
     * MoveIt
     * OctoMap
-    * serial
+    * [serial](https://github.com/wjwwood/serial)
     * tf2
 * GOOGLE
-    * gflags
+    * [gflags](https://code.google.com/p/gflags/)
