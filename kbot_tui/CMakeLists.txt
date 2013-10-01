@@ -4,7 +4,7 @@ project(kbot_tui)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs message_generation kbot_bridge)
+find_package(catkin REQUIRED COMPONENTS roscpp std_msgs message_generation geometry_msgs sensor_msgs kbot_bridge)
 
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS system)
@@ -39,6 +39,8 @@ find_package(Curses REQUIRED)
 generate_messages(
   DEPENDENCIES
   std_msgs
+	geometry_msgs
+	sensor_msgs
 )
 
 ###################################
@@ -69,8 +71,20 @@ set (kbotpi_VERSION_TWEAK 2)
 configure_file (
 	"${PROJECT_SOURCE_DIR}/config.h.in"
 	"${PROJECT_BINARY_DIR}/config.h"
-	)
+)
 
+
+MACRO(HEADER_DIRECTORIES return_list)
+    FILE(GLOB_RECURSE new_list *.h)
+    SET(dir_list "")
+    FOREACH(file_path ${new_list})
+        GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
+        SET(dir_list ${dir_list} ${dir_path})
+    ENDFOREACH()
+    LIST(REMOVE_DUPLICATES dir_list)
+    SET(${return_list} ${dir_list})
+ENDMACRO()
+HEADER_DIRECTORIES(includeList)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
@@ -78,6 +92,8 @@ include_directories(include
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
   ${Gflags_INCLUDE_DIRS}
+	${PROJECT_BINARY_DIR}
+	${includeList}
 )
 
 ## Declare a cpp library
