@@ -26,6 +26,10 @@ void Network::Run(){
 
 }
 
+Node Network::getNode(){
+	return node;
+}
+
 void publish(string url, string value){
 	ros::Publisher p = node.advertise<std_msgs::String>(url, 1);
 	std_msgs::String msg;

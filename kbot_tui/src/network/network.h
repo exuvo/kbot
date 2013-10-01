@@ -7,8 +7,8 @@ using namespace std;
 
 template <class T, class Y>
 void publish(string url, T value);
-	ros::Publisher p = node.advertise<std_msgs::Y>(url, 1);
-	std_msgs::String msg;
+	ros::Publisher p = node.advertise<Y>(url, 1);
+	Y msg;
 	msg.data = value;
 	p.publish(msg);
 }
@@ -20,6 +20,7 @@ public:
 	void start() { m_thread = thread(&Network::run, this); }
 	void stop() { m_stop = true; }
 	void join() { m_thread.join(); }
+	Node getNode();
 
 /*
  	void publish(string url, string value);
