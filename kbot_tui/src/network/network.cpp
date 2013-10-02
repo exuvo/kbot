@@ -3,6 +3,8 @@
 #include "std_msgs/String.h"
 #include <gflags/gflags.h>
 
+using namespace std;
+
 Network::Network(){
 
 }
