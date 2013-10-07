@@ -62,15 +62,15 @@ void addCone(octomap::Pointcloud *cloud, octomap::pose6d orientation, double ran
            circ = 2*M_PI*r,
            cr = cos(rot_angle), // for rot-matrix.
            sr = sin(rot_angle); //
-    octomap::point3d ray(r,0,range); // note: length may be >range (cone).
+    octomap::point3d ray(range,0,r); // note: length may be >range (cone).
 
     int no = circ/ray_diff;
     while (--no >= 0) {
       octomap::point3d v = orientation.rot().rotate(ray);
       cloud->push_back(v);
-      double x = ray.x(), y = ray.y(); 
-      ray.x() = x * cr + y * -sr; // (c -s)   (x)
-      ray.y() = x * sr + y * cr;  // (s  c) * (y)
+      double y = ray.y(), z = ray.z(); 
+      ray.x() = y * cr + z * -sr; // (c -s)   (y)
+      ray.y() = y * sr + z * cr;  // (s  c) * (z)
     }
   }
 
