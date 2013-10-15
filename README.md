@@ -6,7 +6,7 @@ It uses active sonar and a camera to navigate its surroundings.
 The goal is for it to be able to survive independently while also 
 supporting high-level remote control from a pc or mobile phone.
 
-Build log http://elektronikforumet.com/forum/viewtopic.php?f=3&t=66441 (requires registration to view pictures).
+[Build log](http://elektronikforumet.com/forum/viewtopic.php?f=3&t=66441) (requires registration to view pictures there, [pictures only here](http://exuvo.se/gallery/usergallery/exuvo/gallery/gallery/kbot)).
 
 **Communication**
 * internal
@@ -22,8 +22,8 @@ Build log http://elektronikforumet.com/forum/viewtopic.php?f=3&t=66441 (requires
 * libraries: ROS
 * make utility: cmake
 * version control: git (@github)
-* Runs on a Parallella (http://www.parallella.org/board/)
-* Code style http://www.ros.org/wiki/CppStyleGuide
+* Runs on a [Parallella](http://www.parallella.org/board/)
+* Code style is similar to [standard ROS](http://www.ros.org/wiki/CppStyleGuide)
 
 **Objectives**
 * Read data from serial port connected to lpc1768
