@@ -52,14 +52,14 @@ infoWidget::~infoWidget() {
 
 void menuWidget::rebuild(){
 		items = (ITEM **) calloc(names.size()+1, sizeof(ITEM*));
-		check_mem(items);
+		dbg_check_mem(items);
 		for(unsigned int i=0; i<names.size(); i++){
 			items[i] = new_item(names[i].data(), desc[i].data());
-			check(items[i], "");
+			dbg_check(items[i], "");
 			set_item_userptr(items[i], (void*)(intptr_t)i);
 		}
 		menu = new_menu(items);
-		check(menu, "");
+		dbg_check(menu, "");
 		set_menu_win(menu, w);
 		set_menu_sub(menu, derwin(w,getmaxy(w)-4,getmaxx(w)-2,3,1));
 		set_menu_mark(menu, " * ");
@@ -85,7 +85,7 @@ void menuWidget::rebuild(){
 
 		return;
 		error:
-			debug("e");
+			dbg_debug("e");
 	}
 
 void menuWidget::clean(){

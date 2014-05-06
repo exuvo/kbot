@@ -7,13 +7,15 @@ project(kbot_tui)
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs message_generation geometry_msgs sensor_msgs kbot_bridge)
 
 ## System dependencies are found with CMake's conventions
-#find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(Gflags REQUIRED)
 
 set(CURSES_USE_NCURSES true)
 find_package(Curses REQUIRED)
+#FIND_PACKAGE(Panel REQUIRED)
+#FIND_PACKAGE(Menu REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -68,15 +70,17 @@ set (kbotpi_VERSION_MINOR 0)
 set (kbotpi_VERSION_PATCH 4)
 set (kbotpi_VERSION_TWEAK 2)
 
+set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g -W -Wall -Wextra -std=c++11") #-pedantic
+
 #configure a header file to pass some of the CMake settings to the source code
 configure_file (
 	"${PROJECT_SOURCE_DIR}/config.h.in"
 	"${PROJECT_BINARY_DIR}/config.h"
 )
 
-
 MACRO(HEADER_DIRECTORIES return_list)
-    FILE(GLOB_RECURSE new_list *.h)
+    FILE(GLOB_RECURSE new_list src/*.h src/*.hpp)
     SET(dir_list "")
     FOREACH(file_path ${new_list})
         GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
@@ -85,7 +89,11 @@ MACRO(HEADER_DIRECTORIES return_list)
     LIST(REMOVE_DUPLICATES dir_list)
     SET(${return_list} ${dir_list})
 ENDMACRO()
-HEADER_DIRECTORIES(includeList)
+
+# all our files.
+FILE (GLOB_RECURSE project_SRCS src/*.cpp src/*.cxx src/*.cc src/*.C src/*.c)
+FILE (GLOB_RECURSE project_HEADERS src/*.h src/*.hpp)
+HEADER_DIRECTORIES(project_HEADERS_DIRS)
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
@@ -94,7 +102,7 @@ include_directories(include
   ${Boost_INCLUDE_DIRS}
   ${Gflags_INCLUDE_DIRS}
 	${PROJECT_BINARY_DIR}
-	${includeList}
+	${project_HEADERS_DIRS}
 )
 
 ## Declare a cpp library
@@ -103,12 +111,9 @@ include_directories(include
 # )
 
 ## Declare a cpp executable
-aux_source_directory(src source)
-aux_source_directory(src/network source)
-aux_source_directory(src/ui source)
-add_executable(kbot_tui ${source})
+add_executable(kbot_tui ${source} ${project_SRCS})
 
-set_target_properties(kbot_tui PROPERTIES COMPILE_FLAGS -std=c++11 -O3 -g -W -Wall -Wextra -pedantic)
+set_target_properties(kbot_tui PROPERTIES COMPILE_FLAGS "-std=c++11 -O2 -g -Wall -Wextra")
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes

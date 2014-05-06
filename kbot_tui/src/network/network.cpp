@@ -28,7 +28,7 @@ void Network::Run(){
 
 }
 
-Node Network::getNode(){
+ros::NodeHandle Network::getNode(){
 	return node;
 }
 

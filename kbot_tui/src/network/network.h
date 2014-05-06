@@ -14,7 +14,7 @@ public:
 	void start() { m_thread = thread(&Network::run, this); }
 	void stop() { m_stop = true; }
 	void join() { m_thread.join(); }
-	Node getNode();
+	ros::NodeHandle getNode();
 /*
 template <class T, class Y>
 void publish(string url, T value);
@@ -31,7 +31,7 @@ void publish(string url, T value);
 	
 private:
 	atomic<bool> m_stop;
-	thread m_thread;
+	std::thread m_thread;
 	ros::NodeHandle node;
 
 	void run();
