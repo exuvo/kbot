@@ -26,9 +26,10 @@ int main( int argc, char* argv[] ){
 	}
 
 	ui.start();
-	network.start();
+	network.start(argc, argv);
 
 	ui.join();
+  network.stop();
 	network.join();
 	cout << "Main exit\n";
 }

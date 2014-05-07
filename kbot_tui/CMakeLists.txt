@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(kbot_tui)
 
+#set(CMAKE_VERBOSE_MAKEFILE ON)
+
+# disable debug output
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG")
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -69,9 +74,6 @@ set (kbotpi_VERSION_MAJOR 0)
 set (kbotpi_VERSION_MINOR 0)
 set (kbotpi_VERSION_PATCH 4)
 set (kbotpi_VERSION_TWEAK 2)
-
-set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g -W -Wall -Wextra -std=c++11") #-pedantic
 
 #configure a header file to pass some of the CMake settings to the source code
 configure_file (
