@@ -5,8 +5,6 @@
 #include "kbotpi.h"
 #include "settings.h"
 
-using namespace std;
-
 class mainTab : public tab {
 private:
 	menuWidget menu;
@@ -45,7 +43,7 @@ void UI::initHeader(){
 
 	int col=1;
 	for(tab* t : tabs){
-		string &name = t->getName();
+		std::string &name = t->getName();
 		col += name.size();
 		mvwaddch(w, 1, col, ACS_BTEE);
 		mvwaddch(w, 0, col, ACS_VLINE);
@@ -59,7 +57,7 @@ void UI::drawHeader(){
 
 	int col=1;
 	for(tab* t : tabs){
-		string &name = t->getName();
+		std::string &name = t->getName();
 
 		if(currentTab == t) wattron(w, color::ACTIVE);
 		mvwaddstr(w, 0, col, name.data());
@@ -69,7 +67,7 @@ void UI::drawHeader(){
 }
 
 void UI::run(){
-	cout << "Starting UI thread\n";
+	std::cout << "Starting UI thread\n";
 	initscr();
 	cbreak();//Disable line buffering
 	noecho();
@@ -143,6 +141,6 @@ void UI::run(){
 	}
 
 	endwin();
-	cout << "Stopping UI thread\n";
+	std::cout << "Stopping UI thread\n";
 }
 
