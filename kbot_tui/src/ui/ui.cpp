@@ -32,6 +32,22 @@ public:
 	}
 };
 
+class networkTab : public tab {
+private:
+public:
+	networkTab(): tab("main") {};
+	~networkTab() {}
+
+	void update(){
+    int col=1;
+		//mvwaddstr(win, 0, col, network.getNode()->"");
+	}
+
+	bool input(int key){
+    return false;
+	}
+};
+
 void UI::initHeader(){
 	headerW = newwin(2, COLS, 0, 0);
 	WINDOW *w = headerW;
