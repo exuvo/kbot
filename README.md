@@ -10,12 +10,11 @@ supporting high-level remote control from a pc or mobile phone.
 
 **Communication**
 * internal
-  * with lpc1768 (rest of the robot) using serial port (UART).
-  * 1 pin connected to lpc1768 boot-request for programming.
+  * with Zircon 4 (robot mainboard with a STM32F437ZGT6) using serial port over USB.
 * external
   * short range: usb wifi for normal control over tcp/udp.
-  * long range: xbee connected to lpc1768.
-  * local ssh console ncurses gui
+  * long range: xbee connected to Zircon 4.
+  * ncurses gui over ssh for settings and system status
 
 **Program environment**
 * language: c++
@@ -23,11 +22,12 @@ supporting high-level remote control from a pc or mobile phone.
 * make utility: cmake
 * version control: git (@github)
 * Runs on a [Parallella](http://www.parallella.org/board/)
+* Vision code will probably run on a Raspberry Pi
 * Code style is similar to [standard ROS](http://www.ros.org/wiki/CppStyleGuide)
 
 **Objectives**
-* Read data from serial port connected to lpc1768
-  * Read data from xbee sent thru lpc1768
+* Read data from serial port connected to Zircon 4
+  * Read data forwarded from Zircon 4s XBee
   * sensors: sonar, motor status, battery level
 * Read data from network (wifi)
   * commands from computer/phone
@@ -40,13 +40,13 @@ supporting high-level remote control from a pc or mobile phone.
   * utilize Epiphany coprocessor
 
 **Structure**
-* lpc1768 communication: get sensor values, send motor commands
+* Zircon 4 communication: get sensor values, send motor commands
   * Serial port reader (kbot\_bridge)
 * Network: Maintain list of connected clients
   * Parser: Understand commands. aware where a request came from and respond correctly
   * Connection sources: wifi tcp, xbee
 * Map
-  * Mapping: Take sonar pings from lpc1768 (kbot\_bridge) and place on map as an arc (kbot\_mapper)
+  * Mapping: Take sonar pings from Zircon 4 (kbot\_bridge) and place on map as an arc (kbot\_mapper)
   * Navigation: navigate around things
   * Drift correction: try to correct for sensor drift over time
 * Vision
