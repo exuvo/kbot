@@ -2,9 +2,7 @@ kbotpi
 ======
 
 This is the control program for a tracked robot called Kartobot. 
-It uses active sonar and a camera to navigate its surroundings.
-The goal is for it to be able to survive independently while also 
-supporting high-level remote control from a pc or mobile phone.
+It uses active sonar and a camera to navigate its surroundings. Listens to high-level remote control from a pc or mobile phone. The goal is for it to be able to survive handling the controls to a 5 year old. It should activly avoid hitting walls even if it is receiving commands to do so.
 
 [Build log](http://elektronikforumet.com/forum/viewtopic.php?f=3&t=66441) (requires registration to view pictures there, [pictures only here](http://exuvo.se/gallery/usergallery/exuvo/gallery/gallery/kbot)).
 
