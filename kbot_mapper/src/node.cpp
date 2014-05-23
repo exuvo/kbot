@@ -57,7 +57,7 @@ void addCone(octomap::Pointcloud *cloud, octomap::pose6d orientation, double ran
   orientation.rot().inv_IP(); // needed to convert FROM sensor-based coords
 
   double rstep = range/ray_diff;
-  for (double r = 0; r < range; r+=rstep) {
+  for (double r = ray_diff/2; r < range; r+=rstep) {
     double rot_angle = ray_diff/r,
            circ = 2*M_PI*r,
            cr = cos(rot_angle), // for rot-matrix.
