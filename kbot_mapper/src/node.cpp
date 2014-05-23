@@ -11,13 +11,14 @@ octomap::OcTree *tree;
 double resolution = 0.01; // meters
 
 
-
+/// Simple.
 void addRay(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
   octomap::point3d ray(range,0,0); // in sensor-base
   octomap::point3d v = orientation.rot().rotate(ray); // in world-base
   cloud->push_back(v);
 }
 
+/// Bad. 2d arc.
 void addArc(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
   
   // radian diff between each ray
@@ -27,18 +28,15 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d orientation, double rang
 
   octomap::point3d ray(range,0,0); // in sensor-base
   
-  // rotate (around z) to left-most ray
-  ray.rotate_IP(0, 0, -field_of_view/2 + fmod(field_of_view, diff_angle));
+  // rotate (around y) to left-most ray
+  ray.rotate_IP(0, 0, -field_of_view/2.0 + fmod(field_of_view, diff_angle)/2.0);
 
-  double cos_diff_angle = cos(diff_angle), // 2D rotation matrix:
+  double cos_diff_angle = cos(diff_angle), // 2D rot-matrix:
          sin_diff_angle = sin(diff_angle); //  (c -s)
                                            //  (s  c)
-
   for (int a = -field_of_view/2; a <= field_of_view/2; a += diff_angle) {
     
-    // convert to world-based coords
-    octomap::point3d v = orientation.rot().rotate(ray);
-
+    octomap::point3d v = orientation.rot().rotate(ray); // to world-coords
     cloud->push_back(v);
 
     ROS_DEBUG("Added ray. sensor-based coords: (%f,%f,%f), world-based coords: (%f,%f,%f).", ray.x(), ray.y(), ray.z(), v.x(), v.y(), v.z());
@@ -51,26 +49,54 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d orientation, double rang
 
 }
 
-void addCone(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
-  // TODO how to evenly distribute rays? randomly? circularly? effectiveness?
+/// Best way of doing it probably. Gives a cone with a round bottom.
+// Like a cone on top of a hemisphere.
+void addBurst(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
+  // TODO efficiency?
+  double diff_angle = ray_diff / range; // arc: theta = L/r
 
   orientation.rot().inv_IP(); // needed to convert FROM sensor-based coords
+  for (double a = 0.0; a <= 2.0*M_PI; a += diff_angle) {
+    double sa = sin(a), ca = cos(a);
+    for (double b = 0.0; b <= field_of_view/2.0; b += diff_angle) {
+      double c = M_PI/2.0 - b;
+      octomap::point3d ray(sin(c), sa*cos(c), ca*cos(c)); // magic
+      ray *= range;
+      octomap::point3d v = orientation.rot().rotate(ray); // to world-coords
+      cloud->push_back(v);
+    }
+  }
+}
 
-  double rstep = range/ray_diff;
-  for (double r = ray_diff/2; r < range; r+=rstep) {
+
+// Bad
+void addCone(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
+  // TODO how to evenly distribute rays? randomly? circularly? effectiveness?
+  orientation.rot().inv_IP(); // needed to convert FROM sensor-based coords
+
+  // draws circles. one radius at a time.
+  double base_r = range*tan(field_of_view/2.0);
+  for (double r = ray_diff/2.0; r <= base_r; r += ray_diff) {
     double rot_angle = ray_diff/r,
-           circ = 2*M_PI*r,
+           circ = 2.0*M_PI*r,
            cr = cos(rot_angle), // for rot-matrix.
            sr = sin(rot_angle); //
+
+    // x:forward, y:up, z:right
     octomap::point3d ray(range,0,r); // note: length may be >range (cone).
 
-    int no = circ/ray_diff;
+    int no = circ/ray_diff + 1; // rounding up
     while (--no >= 0) {
-      octomap::point3d v = orientation.rot().rotate(ray);
+      octomap::point3d v = orientation.rot().rotate(ray); // to world-coords.
       cloud->push_back(v);
+      // rotate 2d. (ignore x)
       double y = ray.y(), z = ray.z(); 
-      ray.x() = y * cr + z * -sr; // (c -s)   (y)
-      ray.y() = y * sr + z * cr;  // (s  c) * (z)
+      ray.y() = y * cr + z * -sr; // (c -s)   (y)
+      ray.z() = y * sr + z * cr;  // (s  c) * (z)
+      // precision declines.. have to ensure length... TODO better way
+      float len = sqrt(ray.y()*ray.y() + ray.z()*ray.z());
+      ray.y() = ray.y()/len * r;
+      ray.z() = ray.z()/len * r;
     }
   }
 
