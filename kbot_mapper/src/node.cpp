@@ -51,7 +51,7 @@ void addArc(octomap::Pointcloud *cloud, octomap::pose6d orientation, double rang
 
 /// Best way of doing it probably. Gives a cone with a round bottom.
 // Like a cone on top of a hemisphere.
-void addBurst(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
+void addHadouken(octomap::Pointcloud *cloud, octomap::pose6d orientation, double range, double field_of_view, double ray_diff) {
   // TODO efficiency?
   double diff_angle = ray_diff / range; // arc: theta = L/r
 
