@@ -61,7 +61,7 @@ void addBurst(octomap::Pointcloud *cloud, octomap::pose6d orientation, double ra
     for (double b = 0.0; b <= field_of_view/2.0; b += diff_angle) {
       double c = M_PI/2.0 - b;
       octomap::point3d ray(sin(c), sa*cos(c), ca*cos(c)); // magic
-      ray *= range;
+      ray += range;
       octomap::point3d v = orientation.rot().rotate(ray); // to world-coords
       cloud->push_back(v);
     }
