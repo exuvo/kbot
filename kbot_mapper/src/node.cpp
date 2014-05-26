@@ -55,13 +55,21 @@ void addHadouken(octomap::Pointcloud *cloud, octomap::pose6d orientation, double
   // TODO efficiency?
   double diff_angle = ray_diff / range; // arc: theta = L/r
 
+  // x:forward, y:up, z:right
+  double lk = 1.0, hk = 0.5, wk = 0.5;
+
   orientation.rot().inv_IP(); // needed to convert FROM sensor-based coords
   for (double a = 0.0; a <= 2.0*M_PI; a += diff_angle) {
     double sa = sin(a), ca = cos(a);
     for (double b = 0.0; b <= field_of_view/2.0; b += diff_angle) {
       double c = M_PI/2.0 - b;
-      octomap::point3d ray(sin(c), sa*cos(c), ca*cos(c)); // magic
-      ray += range;
+      octomap::point3d ray(
+          lk * sin(c),
+          hk * sa * cos(c),
+          wk * ca * cos(c));
+      ray *= 0.5f;
+      ray.z() += 0.5f;
+      ray.z() *= range;
       octomap::point3d v = orientation.rot().rotate(ray); // to world-coords
       cloud->push_back(v);
     }
