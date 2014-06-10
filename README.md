@@ -8,7 +8,7 @@ It uses active sonar and a camera to navigate its surroundings. Listens to high-
 
 **Communication**
 * internal
-  * with Zircon 4 (robot mainboard with a STM32F437ZGT6) using serial port over USB.
+  * with [Zircon 4](https://oshpark.com/shared_projects/L3JRpNqU) (robot mainboard with a STM32F437ZGT6) using serial port over USB.
 * external
   * short range: usb wifi for normal control over tcp/udp.
   * long range: xbee connected to Zircon 4.
@@ -60,3 +60,4 @@ It uses active sonar and a camera to navigate its surroundings. Listens to high-
     * tf2
 * External
     * [gflags](https://code.google.com/p/gflags/)
+    * [ezesdk](http://www.users.on.net/~notzed/software/ezesdk.html)
