@@ -68,8 +68,8 @@ void addHadouken(octomap::Pointcloud *cloud, octomap::pose6d orientation, double
           hk * sa * cos(c),
           wk * ca * cos(c));
       ray *= 0.5f;
-      ray.z() += 0.5f;
-      ray.z() *= range;
+      ray.x() += 0.5f;
+      ray.x() *= range;
       octomap::point3d v = orientation.rot().rotate(ray); // to world-coords
       cloud->push_back(v);
     }
