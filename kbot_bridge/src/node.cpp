@@ -16,9 +16,9 @@ int main(int argc, char **argv){
   ros::init(argc, argv, "kbot_bridge");
   node = new ros::NodeHandle;
 
-  google::SetVersionString("Best version.");
-  google::SetUsageMessage("Write something clever here.");
-  google::ParseCommandLineFlags(&argc, &argv, true);
+  gflags::SetVersionString("Best version.");
+  gflags::SetUsageMessage("Write something clever here.");
+  gflags::ParseCommandLineFlags(&argc, &argv, true);
 
   if(!open(FLAGS_port, FLAGS_baud)){
     ROS_FATAL("Failed to open serial port");

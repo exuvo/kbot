@@ -1,5 +1,5 @@
 #!/bin/sh
-source /opt/ros/groovy/setup.bash
+source /opt/ros/hydro/setup.bash
 source ../../devel/setup.bash
 kbotDir=`pwd`
 

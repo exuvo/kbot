@@ -145,9 +145,9 @@ int main(int argc, char **argv){
   ros::init(argc, argv, "kbot_mapper");
   ros::NodeHandle n;
 
-  google::SetVersionString("TODO version"); // TODO version
-  google::SetUsageMessage("TODO usage"); // TODO usage-msg
-  google::ParseCommandLineFlags(&argc, &argv, true); // TODO conflicts with ros flags?
+  gflags::SetVersionString("TODO version"); // TODO version
+  gflags::SetUsageMessage("TODO usage"); // TODO usage-msg
+  gflags::ParseCommandLineFlags(&argc, &argv, true); // TODO conflicts with ros flags?
 
 
   ros::Subscriber sub = n.subscribe("TODO", 1000, handleSonarMsg);

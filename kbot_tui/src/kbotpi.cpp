@@ -16,9 +16,9 @@ Network network;
 int main( int argc, char* argv[] ){
 	string version = util::format("%u.%u.%u.%u\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_TWEAK);
 
-	google::SetVersionString(version);
-  google::SetUsageMessage("Write something clever here.");
-	google::ParseCommandLineFlags(&argc, &argv, true);
+	gflags::SetVersionString(version);
+  gflags::SetUsageMessage("Write something clever here.");
+	gflags::ParseCommandLineFlags(&argc, &argv, true);
 	
 	if(FLAGS_crash){
 		int *p = 0;

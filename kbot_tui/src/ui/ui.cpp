@@ -35,11 +35,12 @@ public:
 class networkTab : public tab {
 private:
 public:
-	networkTab(): tab("main") {};
+	networkTab(): tab("network") {};
 	~networkTab() {}
 
 	void update(){
     int col=1;
+		mvwaddstr(win, 0, col, ros::this_node::getName().c_str());
 		//mvwaddstr(win, 0, col, network.getNode()->"");
 	}
 
@@ -102,7 +103,7 @@ void UI::run(){
 	tabs.push_back(new settingsTab());//bios style
 	tabs.push_back(new dummyTab("log"));//read error file
 	tabs.push_back(new dummyTab("sensors"));//menu list with subsystems	
-	tabs.push_back(new dummyTab("network"));//list current connections
+	tabs.push_back(new networkTab());//list current connections
 
 	for(tab* t : tabs){
 		hide_panel(t->getPanel());
