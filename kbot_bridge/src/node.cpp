@@ -5,9 +5,10 @@
 #include <gflags/gflags.h>
 #include "kbot_bridge/SonarPing.h"
 #include "kbot_bridge/Power.h"
+#include "subscriptions.h"
 
-DEFINE_int32(baud, 9600, "Baudrate.");
-DEFINE_string(port, "", "Serial port.");
+DEFINE_int32(baud, 9600, "Baudrate");
+DEFINE_string(port, "", "Serial port");
 
 ros::NodeHandle* node;
 ros::Publisher sonar_pub, power_pub;
@@ -20,23 +21,25 @@ int main(int argc, char **argv){
   gflags::SetUsageMessage("Write something clever here.");
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-  if(!open(FLAGS_port, FLAGS_baud)){
-    ROS_FATAL("Failed to open serial port");
-    return(1);
+  if(!FLAGS_port.empty()){
+ 		if(open(FLAGS_port, FLAGS_baud)){
+		  ROS_INFO("Serial port open.");
+		}
+  } else {
+		ROS_INFO("No serial port given, dry run started");
   }
-  ROS_INFO("Serial port open");
   
   //TODO add output messages: sonar(Range), Odometry, Imu, TimeReference, 
   //TODO add input messages; motorControl(forward, left)
 
   sonar_pub = node->advertise<kbot_bridge::SonarPing>("sonar_pings", 100);
   power_pub = node->advertise<kbot_bridge::Power>("power", 10);
+  initSubscriptions();
   
   ros::Rate loop_rate(10);
 
   while(ros::ok()){
-    receive();
-    transmit();
+   	receive();
 
     ros::spinOnce();
     loop_rate.sleep();

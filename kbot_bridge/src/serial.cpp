@@ -16,21 +16,31 @@ bool open(string portname, int baudrate){
   port.setBaudrate(baudrate);
   serial::Timeout t = serial::Timeout::simpleTimeout(1000);
   port.setTimeout(t);
-  port.open();
-  return port.isOpen();
+	try{
+		port.open();
+	} catch (const serial::IOException& ex){
+		ROS_ERROR_THROTTLE(10, "IOException while attempting to open serial port '%s': %s", portname.c_str(), ex.what());
+	}
+
+  if(port.isOpen()){
+		port.setPort("kbot_bridge");
+    return true;
+  }
+
+  return false;
 }
 
 serial::Serial& getSerial(){
   return port;
 }
 
-void checkConnection(){
-	if(!port.isOpen()){
-		ROS_WARN_THROTTLE(10, "Serial port closed, reopening");
+bool checkConnection(){
+	if(!port.isOpen() && !port.getPort().empty()){
 		try{
 			port.open();
+			ROS_WARN_THROTTLE(5, "Serial port was closed, reopened.");
 		} catch (const serial::IOException& ex){
-			ROS_ERROR_THROTTLE(10, "IOException while attempting to reopen serial port: %s", ex.what());
+			ROS_ERROR_THROTTLE(10, "Serial port is closed, reopening failed: %s", ex.what());
 		}
 	}
 }
@@ -41,7 +51,9 @@ void resetMessage(){
 }
 
 void receive(){
-  checkConnection();
+  if(!checkConnection()){
+  	return;
+	}
   
   // reads:
   //  3 bytes:
@@ -92,9 +104,16 @@ void receive(){
   }
 }
 
-void transmit(){
-  checkConnection();
-  // TODO
+void transmit(const uint8_t* d, size_t l){
+  if(!checkConnection()){
+  	return;
+	}
+	port.write(d, l);
+}
+
+void transmit(const std::string& s){
+  ROS_DEBUG("Sending '%s'", s.c_str());
+	transmit((uint8_t*)s.data(), s.length());
 }
 
 constexpr uint8_t fromMType(M_Type type){

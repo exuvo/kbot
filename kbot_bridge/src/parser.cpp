@@ -65,6 +65,9 @@ void parse(Message* m){
 		return;
 	}
 
+  std::string s{(const char*)m->data, (size_t)m->length};
+  ROS_DEBUG("Received '%s'", s.c_str());
+
   switch(m->type) {
     case M_Type::Ping:
       pingRoundTrip = chrono::duration_cast<chrono::milliseconds>(lastReceive - pingSent);

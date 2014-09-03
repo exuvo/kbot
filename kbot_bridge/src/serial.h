@@ -40,8 +40,8 @@ public:
 
 bool open(string portname, int baudrate);
 serial::Serial& getSerial();
-void checkSerial();
 void receive();
-void transmit();
+void transmit(const uint8_t* d, size_t l);
+void transmit(const std::string& s);
 
 #endif /* KBOT_BRIDGE_SERIAL_H*/
