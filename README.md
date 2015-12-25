@@ -4,7 +4,9 @@ kbotpi
 This is the control program for a tracked robot called Kartobot. 
 It uses active sonar and a camera to navigate its surroundings. Listens to high-level remote control from a pc or mobile phone. The goal is for it to be able to survive handling the controls to a 5 year old. It should activly avoid hitting walls even if it is receiving commands to do so.
 
-[Build log](http://elektronikforumet.com/forum/viewtopic.php?f=3&t=66441) (requires registration to view pictures there, [pictures only here](http://exuvo.se/gallery/pics/gallery/kbot)).
+[Technical description](http://exuvo.se/project/page/kbot4)
+
+[Build log](http://elektronikforumet.com/forum/viewtopic.php?f=3&t=66441) (requires registration to view pictures there, [pictures only here](http://exuvo.se/pic/gallery/KBot%20V4)).
 
 **Communication**
 * internal
@@ -20,7 +22,7 @@ It uses active sonar and a camera to navigate its surroundings. Listens to high-
 * make utility: cmake
 * version control: git (@github)
 * Runs on a [Parallella](http://www.parallella.org/board/)
-* Vision code will probably run on a Raspberry Pi
+* Vision code will probably run on a pair of Raspberry Pi 2 with cameras
 * Code style is similar to [standard ROS](http://www.ros.org/wiki/CppStyleGuide)
 
 **Objectives**
